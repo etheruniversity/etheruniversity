@@ -13,12 +13,16 @@ import Img from "gatsby-image"
  * - `useStaticQuery`: https://www.gatsbyjs.com/docs/use-static-query/
  */
 
-const Image: React.FC = () => {
+interface LogoProps extends React.HTMLAttributes<HTMLDivElement> {
+  size: number
+}
+
+const Logo: React.FC<LogoProps> = ({ size, style, ...restProps }) => {
   const data = useStaticQuery(graphql`
     query {
-      placeholderImage: file(relativePath: { eq: "gatsby-astronaut.png" }) {
+      placeholderImage: file(relativePath: { eq: "eth-logo-grey.png" }) {
         childImageSharp {
-          fluid(maxWidth: 300) {
+          fluid {
             ...GatsbyImageSharpFluid
           }
         }
@@ -30,7 +34,17 @@ const Image: React.FC = () => {
     return <div>Picture not found</div>
   }
 
-  return <Img fluid={data.placeholderImage.childImageSharp.fluid} />
+  return (
+    <div
+      style={{
+        ...style,
+        height: `auto`,
+        width: `${size}px`,
+      }}
+    >
+      <Img fluid={data.placeholderImage.childImageSharp.fluid} />
+    </div>
+  )
 }
 
-export { Image }
+export { Logo }

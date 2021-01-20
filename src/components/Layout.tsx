@@ -6,9 +6,10 @@
  * See: https://www.gatsbyjs.com/docs/use-static-query/
  */
 
+import { H3 } from "ethereum-org-website/src/components/SharedStyledComponents"
 import { lightTheme, GlobalStyle } from "ethereum-org-website/src/theme"
 import "ethereum-org-website/src/styles/layout.css"
-import { useStaticQuery, graphql } from "gatsby"
+import { useStaticQuery, graphql, Link } from "gatsby"
 import { IntlProvider, IntlContextProvider } from "gatsby-plugin-intl"
 import React from "react"
 import { ThemeProvider } from "styled-components"
@@ -32,6 +33,8 @@ const Layout: React.FC = ({ children }) => {
     }
   `)
 
+  const siteTitle = data.site.siteMetadata?.title || `Title`
+
   return (
     // Providers are required for ethereum.org components to work correctly.
     <IntlProvider
@@ -42,23 +45,40 @@ const Layout: React.FC = ({ children }) => {
       <IntlContextProvider value={intl}>
         <ThemeProvider theme={lightTheme}>
           <GlobalStyle />
-          <Header siteTitle={data.site.siteMetadata?.title || `Title`} />
+          <Header siteTitle={siteTitle} />
           <div
             style={{
               margin: `0 auto`,
-              maxWidth: 960,
+              maxWidth: 1100,
               padding: `0 1.0875rem 1.45rem`,
             }}
           >
             <main>{children}</main>
             <footer
               style={{
-                marginTop: `2rem`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginTop: `3rem`,
+                marginBottom: `1rem`,
               }}
             >
-              © {new Date().getFullYear()}, Built with
-              {` `}
-              <a href="https://www.gatsbyjs.com">Gatsby</a>
+              <H3 style={{ margin: 0, marginRight: "3rem" }}>
+                <Link
+                  to="/"
+                  style={{
+                    color: `black`,
+                    textDecoration: `none`,
+                  }}
+                >
+                  {siteTitle}
+                </Link>
+              </H3>
+              <p style={{ margin: 0 }}>
+                © {new Date().getFullYear()}, Built with
+                {` `}
+                <a href="https://www.gatsbyjs.com">Gatsby</a>
+              </p>
             </footer>
           </div>
         </ThemeProvider>
