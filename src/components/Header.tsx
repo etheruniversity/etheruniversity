@@ -34,7 +34,7 @@ const Header: React.FC<HeaderProps> = ({ siteTitle = "" }) => (
       <Logo size={50} style={{ marginRight: "0.5rem" }} />
       <H2 style={{ margin: 0, marginRight: "3rem" }}>
         <Link
-          to="/"
+          to="/home"
           style={{
             color: `black`,
             textDecoration: `none`,
@@ -43,7 +43,7 @@ const Header: React.FC<HeaderProps> = ({ siteTitle = "" }) => (
           {siteTitle}
         </Link>
       </H2>
-      <NavLink to="/">Home</NavLink>
+      <NavLink to="/home">Home</NavLink>
       <NavLink to="/#how-it-works">How It Works</NavLink>
       <NavLink to="/curriculum">Curriculum</NavLink>
       <div style={{ flex: 1 }} />

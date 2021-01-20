@@ -65,7 +65,7 @@ const Layout: React.FC = ({ children }) => {
             >
               <H3 style={{ margin: 0, marginRight: "3rem" }}>
                 <Link
-                  to="/"
+                  to="/home"
                   style={{
                     color: `black`,
                     textDecoration: `none`,
