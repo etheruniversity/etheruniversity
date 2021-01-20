@@ -44,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({ siteTitle = "" }) => (
         </Link>
       </H2>
       <NavLink to="/home">Home</NavLink>
-      <NavLink to="/#how-it-works">How It Works</NavLink>
+      <NavLink to="/home#how-it-works">How It Works</NavLink>
       <NavLink to="/curriculum">Curriculum</NavLink>
       <div style={{ flex: 1 }} />
       <ButtonPrimary style={{ margin: 0 }}>Get Started</ButtonPrimary>
