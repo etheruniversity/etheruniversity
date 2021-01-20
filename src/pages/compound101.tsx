@@ -7,6 +7,7 @@ import ButtonLink from "ethereum-org-website/src/components/ButtonLink"
 const Compound101 = () => {
   // I realize there's a bug here if a user deposits more than once. Let's not worry about that yet :)
   const [currentWalletUSDCBalance, setCurrentWalletUSDCBalance] = useState(0.0);
+  const [currentWalletETHBalance, setCurrentWalletETHBalance] = useState(0.0);
   const [currentUSDCApy, setCurrentUSDCApy] = useState(0.0);
   const [deposit, setDeposit] = useState({block: 0, amount: 0});
   const [earnings, setEarnings] = useState({block: 0, usdcEarned: 0, compEarned: 0});
@@ -29,7 +30,7 @@ const Compound101 = () => {
             <p>
             <span style={{fontWeight: "bold"}}>Your Wallet</span><br/>
             USDC Balance: {currentWalletUSDCBalance}<br/>
-            ETH Balance: 20
+            ETH Balance: {currentWalletETHBalance}
             </p>
             </div>
             <div style={circleStyle}>
