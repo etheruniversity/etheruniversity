@@ -10,6 +10,12 @@ Based on https://github.com/gatsbyjs/gatsby-starter-default
 1. `npm start`
 1. The site will be running at http://localhost:8000.
 
+## Stack
+
+- TypeScript
+- Gatsby
+- React
+
 # Gatsby Default Starter README
 
 <!-- AUTO-GENERATED-CONTENT:START (STARTER) -->
