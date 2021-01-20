@@ -4,10 +4,10 @@ Based on https://github.com/gatsbyjs/gatsby-starter-default
 
 ## Quick Start
 
-1. `git clone https://github.com/etheducation/etheducation`
-1. `cd etheducation`
-1. `npm install`
-1. `npm start`
+1. Clone repository: `git clone https://github.com/etheducation/etheducation`.
+1. Change into the repository directory: `cd etheducation`.
+1. Install dependencies: `yarn install`.
+1. Start development server: `yarn start`.
 1. The site will be running at http://localhost:8000.
 
 ## Stack
@@ -15,6 +15,17 @@ Based on https://github.com/gatsbyjs/gatsby-starter-default
 - TypeScript
 - Gatsby
 - React
+- ethereum.org Components
+
+  > We use the same components used on ethereum.org, imported from the [ethereum-org-website](https://github.com/ethereum/ethereum-org-website) repository. `Layout.tsx` imports the required `<Provider>` components for the components to work correctly. You don't have to import the providers anywhere else. Import components from `ethereum-org-website/src/components`. Here's an example using ethereum.org's `<ButtonLink>` component:
+  >
+  > ```js
+  > import ButtonLink from "ethereum-org-website/src/components/ButtonLink"
+  >
+  > const ButtonLinkToPage2 = () => (
+  >   <ButtonLink to="/page-2/">Page 2</ButtonLink>
+  > )
+  > ```
 
 # Gatsby Default Starter README
 
