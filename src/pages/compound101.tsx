@@ -6,10 +6,19 @@ const Compound101 = () => {
   // I realize there's a bug here if a user deposits more than once. Let's not worry about that yet :)
   const [deposit, setDeposit] = useState({block: 0, amount: 0});
   const [earnings, setEarnings] = useState({block: 0, usdcEarned: 0, compEarned: 0});
+  const headerStyle = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  }
   return (
     <Layout>
       <SEO title="Compound 101" />
-      <h1>Compound 101</h1>
+      <div style={headerStyle} >
+        <h1>Compound 101</h1>
+        <p>Last updated January 20, 2021</p>
+      </div>
       <p>This section is all about why anyone would want to deposit assets into Compound. We can talk about higher APYs than savings accounts and other cool benefits like the ability to take a loan.</p>
       <p>First, approve the contract so it can take money out of your account.</p>
       <p>TODO: Approve button</p>
