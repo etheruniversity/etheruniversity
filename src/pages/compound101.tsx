@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { Link } from "gatsby"
-import { Layout, SEO } from "../components/"
-import Card from "ethereum-org-website/src/components/Card"
+import { Layout, SEO, InteractionCard} from "../components/"
 import ButtonLink from "ethereum-org-website/src/components/ButtonLink"
 
 const Compound101 = () => {
@@ -11,7 +10,7 @@ const Compound101 = () => {
   const [currentUSDCApy, setCurrentUSDCApy] = useState(0.0);
   const [deposit, setDeposit] = useState({block: 0, amount: 0});
   const [earnings, setEarnings] = useState({block: 0, usdcEarned: 0, compEarned: 0});
-
+  const depositButton = <ButtonLink to="#">Deposit All USDC</ButtonLink>
   return (
     <Layout>
       <SEO title="Compound 101" />
@@ -23,26 +22,10 @@ const Compound101 = () => {
       <p>First, approve the contract so it can take money out of your account.</p>
       <div style={{textAlign: "center", marginBottom: 20}}><ButtonLink to="#">Approve</ButtonLink></div>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tortor posuere ac ut consequat semper viverra nam. Arcu bibendum at varius vel pharetra vel turpis nunc. Quis viverra nibh cras pulvinar mattis. Tempus egestas sed sed risus pretium. Eros in cursus turpis massa tincidunt dui ut ornare. Cras sed felis eget velit. Consectetur libero id faucibus nisl tincidunt eget nullam non. Tellus id interdum velit laoreet. Morbi blandit cursus risus at ultrices.</p>
-      <div style={cardContainerStyle}>
-        <Card title="Compound Deposit" emoji=":bank:">
-          <div style={dataStyle}>
-            <div style={{textAlign: "left"}}>
-            <p>
-            <span style={{fontWeight: "bold"}}>Your Wallet</span><br/>
-            USDC Balance: {currentWalletUSDCBalance}<br/>
-            ETH Balance: {currentWalletETHBalance}
-            </p>
-            </div>
-            <div style={circleStyle}>
-              APY {currentUSDCApy}%
-            </div>
-          </div>
-          <ButtonLink to="#">Deposit All USDC</ButtonLink>
-        </Card>
-      </div>
+      <InteractionCard title="Compound Deposit" sideTextTitle="Your Wallet" sideTextBody={<span>USDC Balance: {currentWalletUSDCBalance.toFixed(2)}<br/>ETH Balance: {currentWalletETHBalance.toFixed(2)}</span>} circleText={<span>APY {currentUSDCApy.toFixed(2)}%</span>} button={depositButton} />
       <p>This section is all about the technical mechanics of how compound works under the hood. We’ll talk about the asset pools and collaterlaization ratios.</p>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tortor posuere ac ut consequat semper viverra nam. Arcu bibendum at varius vel pharetra vel turpis nunc. Quis viverra nibh cras pulvinar mattis. Tempus egestas sed sed risus pretium. Eros in cursus turpis massa tincidunt dui ut ornare. Cras sed felis eget velit. Consectetur libero id faucibus nisl tincidunt eget nullam non. Tellus id interdum velit laoreet. Morbi blandit cursus risus at ultrices.</p>
-      <p>TODO: Show deposit amount {deposit.amount} and time since deposit in {earnings.block - deposit.block} in nice UI</p>
+      <InteractionCard title="Compound Deposit" sideTextTitle="Time Since Deposit" sideTextBody={<span>{earnings.block - deposit.block} blocks</span>} circleText={<span>BALANCE ${deposit.amount+earnings.usdcEarned}</span>} />
       <p>You earn interest every block. In the {earnings.block - deposit.block} blocks since you deposited, your balance has grown {earnings.usdcEarned} USDC, from {deposit.amount} USDC to {deposit.amount+earnings.usdcEarned} USDC. You’ve also earned {earnings.compEarned} COMP, the governance token. You can do xyz with the token, or exchange it for USDC on Uniswap.</p>
     </Layout>
   )
@@ -53,34 +36,6 @@ const headerStyle = {
   flexDirection: "row",
   justifyContent: "space-between",
   alignItems: "center"
-}
-
-const dataStyle = {
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-around",
-  alignItems: "center",
-  padding: 30
-}
-
-const circleStyle = {
-  border: "7px solid black",
-  borderRadius: "50%",
-  width: 230,
-  height: 230,
-  fontSize: 32,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  fontWeight: "bold"
-}
-
-const cardContainerStyle = {
-  margin: 100,
-  width: 700,
-  margin: "0 auto",
-  marginBottom: 30,
-  textAlign: "center"
 }
 
 export default Compound101
