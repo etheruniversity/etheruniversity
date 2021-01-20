@@ -15,9 +15,9 @@ Based on https://github.com/gatsbyjs/gatsby-starter-default
 - TypeScript
 - Gatsby
 - React
-- ethereum.org Components
+- [ethereum.org](https://ethereum.org/) Components
 
-  > We use the same components used on ethereum.org, imported from the [ethereum-org-website](https://github.com/ethereum/ethereum-org-website) repository. `Layout.tsx` imports the required `<Provider>` components for the components to work correctly. You don't have to import the providers anywhere else. Import components from `ethereum-org-website/src/components`. Here's an example using ethereum.org's `<ButtonLink>` component:
+  > We use the same components used on [ethereum.org](https://ethereum.org/), imported from the [ethereum-org-website](https://github.com/ethereum/ethereum-org-website) repository. `Layout.tsx` imports the required `<Provider>` components for the components to work correctly. You don't have to import the providers anywhere else. Import components from `ethereum-org-website/src/components`. Here's an example using [ethereum.org](https://ethereum.org/)'s `<ButtonLink>` component:
   >
   > ```js
   > import ButtonLink from "ethereum-org-website/src/components/ButtonLink"
