@@ -1,21 +1,24 @@
-import ButtonLink from "ethereum-org-website/src/components/ButtonLink"
-import { Link } from "gatsby"
-import React from "react"
-import { Layout, Image, SEO } from "../components/"
+import { PageProps, navigate } from "gatsby"
+import React, { useEffect } from "react"
 
-const IndexPage = () => (
-  <Layout>
-    <SEO title="Home" />
-    <h1>ETH Education</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
-    <ButtonLink to="/page-2/">Page 2</ButtonLink>
-    <Link to="/page-2/">Go to page 2</Link> <br />
-    <Link to="/using-typescript/">Go to "Using TypeScript"</Link>
-  </Layout>
-)
+/**
+ * This component redirects users from `/` (the index route) to `/home` (the
+ * actual home page route).
+ *
+ * The home page is located under `/home` because of the way `NavLink`s work.
+ * When you are on a route matching a `NavLink`s `to` prop, the `NavLink` is
+ * highlighted. However, if the home page is located at `/`, all routes will
+ * match. For instance, if you are on `/curriculum`, both "Home" (at `/`) and
+ * "Curriculum" (at `/curriculum`) will match, and both links will be
+ * highlighted. This is not desired behavior; to mitigate this we move the home
+ * page from `/` (matched by `/*`) to `/home` (matched by `/home/*`).
+ */
+const IndexPage: React.FC<PageProps> = () => {
+  useEffect(() => {
+    navigate("/home")
+  }, [])
+
+  return <></>
+}
 
 export default IndexPage
