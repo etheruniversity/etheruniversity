@@ -5,6 +5,7 @@ import {
 } from "ethereum-org-website/src/components/SharedStyledComponents"
 import { Link } from "gatsby"
 import React from "react"
+import { AccountButton } from "./AccountButton"
 import { Logo } from "./Logo"
 
 interface HeaderProps {
@@ -29,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({ siteTitle = "" }) => (
         maxWidth: 1100,
         padding: `1.45rem 1.0875rem`,
         borderBottom: `1px solid rgba(0, 0, 0, 0.1)`,
-        flexWrap: "wrap"
+        flexWrap: "wrap",
       }}
     >
       <Logo size={50} style={{ marginRight: "0.5rem" }} />
@@ -50,7 +51,7 @@ const Header: React.FC<HeaderProps> = ({ siteTitle = "" }) => (
         <NavLink to="/curriculum">Curriculum</NavLink>
       </span>
       <div style={{ flex: 1 }} />
-      <ButtonPrimary style={{ margin: 0 }}>Get Started</ButtonPrimary>
+      <AccountButton />
     </div>
   </header>
 )
