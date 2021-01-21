@@ -2,13 +2,16 @@ import React, { useState, useEffect} from "react"
 import { Link } from "gatsby"
 import { Layout, SEO, InteractionCard} from "../components/"
 import ButtonLink from "ethereum-org-website/src/components/ButtonLink"
-import { useWeb3 } from "../hooks"
+import { useWeb3, useAccount} from "../hooks"
 
 // Source: https://github.com/compound-finance/compound-config
-const CUSDC_MAINNET_ADDRESS = "0x39AA39c021dfbaE8faC545936693aC917d5E7563"
+const CUSDC_MAINNET_ADDRESS = "0x39AA39c021dfbaE8faC545936693aC917d5E7563";
 const CUSDC_ABI = require('../ABIs/cUSDC_ABI.json');
 const CUSDC_DECIMALS = 1e18;
 const BLOCKS_PER_YEAR = 4 * 60 * 24 * 365; // based on 4 blocks occurring every minute
+const USDC_MAINNET_ADDRESS = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
+const USDC_ABI = require('../ABIs/ERC20_ABI.json');
+const USDC_DECIMALS = 1e6;
 
 const Compound101 = () => {
   // I realize there's a bug here if a user deposits more than once. Let's not worry about that yet :)
@@ -21,18 +24,28 @@ const Compound101 = () => {
   const depositButton = <ButtonLink to="#">Deposit All USDC</ButtonLink>
   const withdrawButton = <ButtonLink to="#">Withdraw All USDC</ButtonLink>
 
-  const { web3, loading } = useWeb3();
+  const { web3, loading: web3loading } = useWeb3();
+  const { account, loading: accountLoading } = useAccount();
+
   useEffect(() => {
-      if (!loading) {
-        const cUSDCContract = new web3.eth.Contract(CUSDC_ABI, CUSDC_MAINNET_ADDRESS);
-        cUSDCContract.methods.supplyRatePerBlock().call().then((ratePerBlock) => {
-          const growthPerBlock = 1.0 + parseFloat(ratePerBlock) / CUSDC_DECIMALS
-          const usdcApy = 100 * (Math.pow(growthPerBlock, BLOCKS_PER_YEAR) - 1)
-          setCurrentUSDCApy(usdcApy);
-        });
-      }
+    if (web3loading || !web3) {
+      return
     }
-  )
+    const cUSDCContract = new web3.eth.Contract(CUSDC_ABI, CUSDC_MAINNET_ADDRESS);
+    cUSDCContract.methods.supplyRatePerBlock().call().then((ratePerBlock) => {
+      const growthPerBlock = 1.0 + parseFloat(ratePerBlock) / CUSDC_DECIMALS
+      const usdcApy = 100 * (Math.pow(growthPerBlock, BLOCKS_PER_YEAR) - 1)
+      setCurrentUSDCApy(usdcApy);
+    });
+    if (accountLoading || !account) {
+      return
+    }
+    web3.eth.getBalance("0xD9C1f224b77484535c725C06CE5bD8C1A2B63344").then(parseFloat).then(a => a / 1e18).then(setCurrentWalletETHBalance);
+    const USDCContract = new web3.eth.Contract(USDC_ABI, USDC_MAINNET_ADDRESS);
+    USDCContract.methods.balanceOf("0xD9C1f224b77484535c725C06CE5bD8C1A2B63344").call().then(parseFloat).then(a => a / USDC_DECIMALS).then(setCurrentWalletUSDCBalance).catch((err) => {
+      console.log(err)
+    });
+  });
 
   return (
     <Layout>
