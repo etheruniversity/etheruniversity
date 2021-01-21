@@ -17,6 +17,11 @@ Deployed live to [etheducation.vercel.app](https://etheducation.vercel.app/). Ba
 - React
 - [ethereum.org](https://ethereum.org/) Components
 
+## Infrastructure
+
+- [Vercel](https://vercel.com/) hosts the web frontend
+- [Infura](https://infura.io/) allows us to access the Ethereum blockchain
+
   > We use the same components used on [ethereum.org](https://ethereum.org/), imported from the [ethereum-org-website](https://github.com/ethereum/ethereum-org-website) repository. `Layout.tsx` imports the required `<Provider>` components for the components to work correctly. You don't have to import the providers anywhere else. Import components from `ethereum-org-website/src/components`. Here's an example using [ethereum.org](https://ethereum.org/)'s `<ButtonLink>` component:
   >
   > ```js
