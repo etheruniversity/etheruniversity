@@ -18,13 +18,16 @@ const AccountButton: React.FC<AccountButtonProps> = props => {
       <ButtonPrimary onClick={() => setAccountModalIsOpen(true)} {...props}>
         {loading ? "Connecting..." : "Connected to Blockchain"}
       </ButtonPrimary>
-      <Modal isOpen={accountModalIsOpen} setIsOpen={setAccountModalIsOpen}>
-        <H2 style={{ marginTop: 0 }}>Account Info</H2>
-        <p>Address: {account?.address}</p>
-        <ButtonPrimary style={{ alignSelf: "flex-start" }}>
-          Get Started
-        </ButtonPrimary>
-      </Modal>
+      {/* Just hide the entire element when not open. Overlay is causing z-index issues */}
+      {accountModalIsOpen && (
+        <Modal isOpen={accountModalIsOpen} setIsOpen={setAccountModalIsOpen}>
+          <H2 style={{ marginTop: 0 }}>Account Info</H2>
+          <p>Address: {account?.address}</p>
+          <ButtonPrimary style={{ alignSelf: "flex-start" }}>
+            Get Started
+          </ButtonPrimary>
+        </Modal>
+      )}
     </>
   )
 }
