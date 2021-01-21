@@ -1,7 +1,14 @@
-import React, { useState } from "react"
+import React, { useState, useEffect} from "react"
 import { Link } from "gatsby"
 import { Layout, SEO, InteractionCard} from "../components/"
 import ButtonLink from "ethereum-org-website/src/components/ButtonLink"
+import { useWeb3 } from "../hooks"
+
+// Source: https://github.com/compound-finance/compound-config
+const CUSDC_MAINNET_ADDRESS = "0x39AA39c021dfbaE8faC545936693aC917d5E7563"
+const CUSDC_ABI = require('../ABIs/cUSDC_ABI.json');
+const CUSDC_DECIMALS = 1e18;
+const BLOCKS_PER_YEAR = 4 * 60 * 24 * 365; // based on 4 blocks occurring every minute
 
 const Compound101 = () => {
   // I realize there's a bug here if a user deposits more than once. Let's not worry about that yet :)
@@ -13,6 +20,20 @@ const Compound101 = () => {
   const [earnings, setEarnings] = useState({block: 0, usdcEarned: 0, compEarned: 0});
   const depositButton = <ButtonLink to="#">Deposit All USDC</ButtonLink>
   const withdrawButton = <ButtonLink to="#">Withdraw All USDC</ButtonLink>
+
+  const { web3, loading } = useWeb3();
+  useEffect(() => {
+      if (!loading) {
+        const cUSDCContract = new web3.eth.Contract(CUSDC_ABI, CUSDC_MAINNET_ADDRESS);
+        cUSDCContract.methods.supplyRatePerBlock().call().then((ratePerBlock) => {
+          const growthPerBlock = 1.0 + parseFloat(ratePerBlock) / CUSDC_DECIMALS
+          const usdcApy = 100 * (Math.pow(growthPerBlock, BLOCKS_PER_YEAR) - 1)
+          setCurrentUSDCApy(usdcApy);
+        });
+      }
+    }
+  )
+
   return (
     <Layout>
       <SEO title="Compound 101" />
