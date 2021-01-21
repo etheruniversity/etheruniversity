@@ -29,6 +29,7 @@ const Header: React.FC<HeaderProps> = ({ siteTitle = "" }) => (
         maxWidth: 1100,
         padding: `1.45rem 1.0875rem`,
         borderBottom: `1px solid rgba(0, 0, 0, 0.1)`,
+        flexWrap: "wrap"
       }}
     >
       <Logo size={50} style={{ marginRight: "0.5rem" }} />
@@ -43,9 +44,11 @@ const Header: React.FC<HeaderProps> = ({ siteTitle = "" }) => (
           {siteTitle}
         </Link>
       </H2>
-      <NavLink to="/home">Home</NavLink>
-      <NavLink to="/home#how-it-works">How It Works</NavLink>
-      <NavLink to="/curriculum">Curriculum</NavLink>
+      <span>
+        <NavLink to="/home">Home</NavLink>
+        <NavLink to="/home#how-it-works">How It Works</NavLink>
+        <NavLink to="/curriculum">Curriculum</NavLink>
+      </span>
       <div style={{ flex: 1 }} />
       <ButtonPrimary style={{ margin: 0 }}>Get Started</ButtonPrimary>
     </div>

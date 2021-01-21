@@ -5,20 +5,20 @@ const InteractionCard = ({title, sideTextTitle, sideTextBody, circleText, button
   return (
     <div style={cardContainerStyle}>
       <Card title={title} emoji=":bank:">
-      <div style={dataStyle}>
-        <div style={{textAlign: "left"}}>
-        <p>
-          <span style={{fontWeight: "bold"}}>
-            {sideTextTitle}
-          </span><br/>
-          {sideTextBody}
-        </p>
+        <div style={dataStyle}>
+          <div style={{textAlign: "left"}}>
+          <p>
+            <span style={{fontWeight: "bold"}}>
+              {sideTextTitle}
+            </span><br/>
+            {sideTextBody}
+          </p>
+          </div>
+          <div style={circleStyle}>
+            {circleText}
+          </div>
         </div>
-        <div style={circleStyle}>
-          {circleText}
-        </div>
-      </div>
-      {button}
+        {button}
       </Card>
     </div>
   )
@@ -26,7 +26,7 @@ const InteractionCard = ({title, sideTextTitle, sideTextBody, circleText, button
 
 const cardContainerStyle = {
   margin: 100,
-  width: 700,
+  maxWidth: 700,
   margin: "0 auto",
   marginBottom: 30,
   textAlign: "center"
@@ -37,7 +37,8 @@ const dataStyle = {
   flexDirection: "row",
   justifyContent: "space-around",
   alignItems: "center",
-  padding: 30
+  padding: 30,
+  flexWrap: "wrap"
 }
 
 const circleStyle = {
