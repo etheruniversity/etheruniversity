@@ -7674,7 +7674,7 @@ gatsby-plugin-sitemap@^2.4.7:
     pify "^3.0.0"
     sitemap "^1.13.0"
 
-gatsby-plugin-styled-components@^3.3.3:
+gatsby-plugin-styled-components@^3.3.3, gatsby-plugin-styled-components@^3.9.0:
   version "3.9.0"
   resolved "https://registry.npmjs.org/gatsby-plugin-styled-components/-/gatsby-plugin-styled-components-3.9.0.tgz#510de14e77da898c24a6e74ced39f5d01b2c7e7a"
   integrity sha512-/jvjbeUOHk3X38G67va6n2yUQujNn1e74r0a6977+6MJihELXLskLrGpZF58ZWbV36YryIq0rrSpa5DAxzDaVw==
