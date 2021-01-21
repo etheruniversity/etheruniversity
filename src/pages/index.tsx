@@ -15,7 +15,9 @@ import React, { useEffect } from "react"
  */
 const IndexPage: React.FC<PageProps> = () => {
   useEffect(() => {
-    navigate("/home")
+    navigate("/home", {
+      replace: true,
+    })
   }, [])
 
   return <></>
