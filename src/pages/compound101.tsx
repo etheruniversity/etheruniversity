@@ -40,9 +40,9 @@ const Compound101 = () => {
     if (accountLoading || !account) {
       return
     }
-    web3.eth.getBalance("0xD9C1f224b77484535c725C06CE5bD8C1A2B63344").then(parseFloat).then(a => a / 1e18).then(setCurrentWalletETHBalance);
+    web3.eth.getBalance(account.address).then(parseFloat).then(a => a / 1e18).then(setCurrentWalletETHBalance);
     const USDCContract = new web3.eth.Contract(USDC_ABI, USDC_MAINNET_ADDRESS);
-    USDCContract.methods.balanceOf("0xD9C1f224b77484535c725C06CE5bD8C1A2B63344").call().then(parseFloat).then(a => a / USDC_DECIMALS).then(setCurrentWalletUSDCBalance);
+    USDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(setCurrentWalletUSDCBalance);
   });
 
   return (
