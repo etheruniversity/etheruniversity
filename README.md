@@ -10,6 +10,32 @@ Deployed live to [etheducation.vercel.app](https://etheducation.vercel.app/). Ba
 1. Start development server: `yarn start`.
 1. The site will be running at http://localhost:8000.
 
+## Repository Structure
+
+- `src/ABIs`: contains smart contract [ABIs](https://docs.soliditylang.org/en/v0.8.0/abi-spec.html)
+- `src/components`: contains shared components used across the application
+- `src/hooks`: contains shared hooks used across the application
+  - Notably, this directory includes the `useAccount` and `useWeb3` hooks which allow React to access web3.
+- `src/images`: contains images used in the application
+- `src/pages`: contains the actual pages of the application.
+  - A file named `pagepath.tsx` in this directory will be accessible at `/pagepath`.
+
+## Configuration
+
+Configuration occurs through environment variables. Create a `.env.development` file at the project root and Gatsby will automatically load the variables.
+
+### Required Variables
+
+- `INFURA_WEBSOCKET_ENDPOINT`: the websocket endpoint from Infura to access their ETH node
+
+### Example
+
+Here's an example `.env.development` file.
+
+```
+INFURA_WEBSOCKET_ENDPOINT="wss://ropsten.infura.io/ws/v3/somenumbersandletters"
+```
+
 ## Stack
 
 - TypeScript
