@@ -1,5 +1,6 @@
 import ButtonLink from "ethereum-org-website/src/components/ButtonLink"
 import Modal from "ethereum-org-website/src/components/Modal"
+import Link from "ethereum-org-website/src/components/Link"
 import {
   ButtonPrimary,
   H2,
@@ -38,6 +39,13 @@ const AccountButton: React.FC<AccountButtonProps> = props => {
             You testnet balance is{" "}
             <b>{web3?.utils.fromWei(balance) ?? 0} ETH</b>.
           </p>
+          {balance === "0" && (
+            <p>
+              Since your balance is <b>0 ETH</b>, you should request some ETH
+              from the faucet{" "}
+              <Link to="https://faucet.goerli.mudit.blog/">here</Link>.
+            </p>
+          )}
           <div>
             <ButtonLink to={`${ETHERSCAN_ENDPOINT}/address/${address}`}>
               View Details on Etherscan
