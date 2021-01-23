@@ -7,7 +7,7 @@ import {
 } from "ethereum-org-website/src/components/SharedStyledComponents"
 import { capitalize } from "lodash"
 import React, { useState } from "react"
-import { ETHERSCAN_ENDPOINT, TESTNET_NAME } from "../config"
+import { ETHERSCAN_ENDPOINT, FAUCET_LINK, TESTNET_NAME } from "../config"
 import { useAccount, useWeb3 } from "../hooks"
 
 interface AccountButtonProps
@@ -30,20 +30,25 @@ const AccountButton: React.FC<AccountButtonProps> = props => {
           <H2 style={{ marginTop: 0 }}>Account Info</H2>
           <p>
             We've created an account for you on the{" "}
-            <b>{capitalize(TESTNET_NAME)}</b> Ethereum testnet.
+            <b>{capitalize(TESTNET_NAME)}</b> network.
+          </p>
+          {TESTNET_NAME !== "mainnet" && (
+            <p>
+              The {capitalize(TESTNET_NAME)} network is an Ethereum{" "}
+              <b>testnet</b>, meaning your ETH has no real value. The network is
+              just used for testing.
+            </p>
+          )}
+          <p>
+            Your address is <b>{address}</b>.
           </p>
           <p>
-            Your testnet address is <b>{address}</b>.
-          </p>
-          <p>
-            You testnet balance is{" "}
-            <b>{web3?.utils.fromWei(balance) ?? 0} ETH</b>.
+            You balance is <b>{web3?.utils.fromWei(balance) ?? 0} ETH</b>.
           </p>
           {balance === "0" && (
             <p>
-              Since your balance is <b>0 ETH</b>, you should request some ETH
-              from the faucet{" "}
-              <Link to="https://faucet.goerli.mudit.blog/">here</Link>.
+              Since your balance is <b>0 ETH</b>, you first get some ETH
+              <Link to={FAUCET_LINK}>here</Link>.
             </p>
           )}
           <div>

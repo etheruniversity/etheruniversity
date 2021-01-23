@@ -7,4 +7,21 @@ const ETHERSCAN_ENDPOINT =
     ? `https://etherscan.io`
     : `https://${TESTNET_NAME}.etherscan.io`
 
-export { ETHERSCAN_ENDPOINT, INFURA_WEBSOCKET_ENDPOINT, TESTNET_NAME }
+// Links from https://ethereum.org/en/developers/docs/networks/
+const FAUCET_LINK =
+  TESTNET_NAME === "goerli"
+    ? "https://faucet.goerli.mudit.blog/"
+    : TESTNET_NAME === "kovan"
+    ? "https://faucet.kovan.network/"
+    : TESTNET_NAME === "rinkleby"
+    ? "https://faucet.rinkeby.io/"
+    : TESTNET_NAME === "ropsten"
+    ? "https://faucet.ropsten.be/"
+    : "https://www.coinbase.com/"
+
+export {
+  ETHERSCAN_ENDPOINT,
+  FAUCET_LINK,
+  INFURA_WEBSOCKET_ENDPOINT,
+  TESTNET_NAME,
+}
