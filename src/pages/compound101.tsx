@@ -54,32 +54,27 @@ const Compound101 = () => {
   const { account, loading: accountLoading } = useAccount();
 
   useEffect(() => {
-    if (web3loading || !web3) {
+    if (web3loading || !web3 || accountLoading || !account) {
       return
     }
     const cUSDCContract = new web3.eth.Contract(CUSDC_ABI, ADDRESS.CUSDC);
-    cUSDCContract.methods.supplyRatePerBlock().call().then((ratePerBlock) => {
-      const growthPerBlock = 1.0 + parseFloat(ratePerBlock) / ETH_MANTISSA;
-      const usdcApy = 100 * (Math.pow(growthPerBlock, BLOCKS_PER_YEAR) - 1);
-      setCurrentUSDCApy(usdcApy);
-    });
-    if (accountLoading || !account) {
-      return
-    }
-    web3.eth.getBalance(account.address).then(parseFloat).then(a => a / ETH_MANTISSA).then(setCurrentWalletETHBalance);
-
     const USDCContract = new web3.eth.Contract(USDC_ABI, ADDRESS.USDC);
-    USDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(setCurrentWalletUSDCBalance);
-    USDCContract.methods.allowance(account.address, ADDRESS.CUSDC).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(setCurrentAllowance);
-
     const CUSDCContract = new web3.eth.Contract(CUSDC_ABI, ADDRESS.CUSDC);
-    CUSDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / CUSDC_DECIMALS).then(setDepositAmount);
 
-    const updateExchangeRate = () => {
+    const pollIndefinitely = () => {
+      cUSDCContract.methods.supplyRatePerBlock().call().then((ratePerBlock) => {
+        const growthPerBlock = 1.0 + parseFloat(ratePerBlock) / ETH_MANTISSA;
+        const usdcApy = 100 * (Math.pow(growthPerBlock, BLOCKS_PER_YEAR) - 1);
+        setCurrentUSDCApy(usdcApy);
+      });
+      web3.eth.getBalance(account.address).then(parseFloat).then(a => a / ETH_MANTISSA).then(setCurrentWalletETHBalance);
+      USDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(setCurrentWalletUSDCBalance);
+      USDCContract.methods.allowance(account.address, ADDRESS.CUSDC).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(setCurrentAllowance);
+      CUSDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / CUSDC_DECIMALS).then(setDepositAmount);
       CUSDCContract.methods.exchangeRateCurrent().call().then(parseFloat).then(a => a / (ETH_MANTISSA * USDC_DECIMALS * Math.pow(CUSDC_DECIMALS, -1))).then(setUsdcPerCusdcRate);
-      setTimeout(updateExchangeRate, 10000) // Poll indefinitely
+      setTimeout(pollIndefinitely, 10000)
     }
-    updateExchangeRate(); // Start polling
+    pollIndefinitely(); // Start polling
   }, [web3loading, web3, accountLoading, account]);
 
   return (
