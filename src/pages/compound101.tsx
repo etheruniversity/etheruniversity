@@ -84,17 +84,18 @@ const headerStyle = {
   flexWrap: "wrap"
 }
 
-const signTx = (account, web3, tx) => {
-  account.signTransaction(tx).then((signedTx) => signedTx.rawTransaction).then((rawTx) => {
-    web3.eth.sendSignedTransaction(rawTx, (error, result) => {
-      if (error) {
-        console.error("Transaction failed");
-        console.error(error);
-      } else {
-        console.log("Transaction succeeded");
-      }
-    }).then(console.log);
+const signAndSendTx = async (account, web3, tx) => {
+  tx = await account.signTransaction(tx)
+  tx = tx.rawTransaction;
+  const txReceipt = await web3.eth.sendSignedTransaction(tx, (error, result) => {
+    if (error) {
+      console.error("Transaction sending failed");
+      console.error(error);
+    } else {
+      console.log("Transaction sending succeeded");
+    }
   });
+  console.log(txReceipt);
 }
 
 const depositButtonHandler = (account, web3, amount) => {
@@ -107,7 +108,7 @@ const depositButtonHandler = (account, web3, amount) => {
     gasPrice: 1,
     gas: 300000
   };
-  signTx(account, web3, tx)
+  signAndSendTx(account, web3, tx)
 }
 
 const approveButtonHandler = (account, web3) => {
@@ -120,7 +121,7 @@ const approveButtonHandler = (account, web3) => {
     gas: 300000
   };
   USDCContract.methods.approve(ADDRESS.CUSDC, 1e6 * USDC_DECIMALS).call().then(console.log);
-  signTx(account, web3, tx)
+  signAndSendTx(account, web3, tx)
 }
 
 export default Compound101
