@@ -9,6 +9,9 @@ import { useWeb3 } from "./useWeb3"
 function useAccount() {
   const [loading, setLoading] = useState(true)
   const [account, setAccount] = useState<Account>()
+  // `balance` should be a string because it is in wei and could be very large?
+  // Regardless, web3 returns `balance` as a string rather than a number.
+  const [balance, setBalance] = useState("0")
 
   const { web3, loading: web3Loading } = useWeb3()
 
@@ -31,7 +34,15 @@ function useAccount() {
     setLoading(false)
   }, [web3Loading])
 
-  return { loading, account }
+  useEffect(() => {
+    if (!!account) {
+      web3?.eth.getBalance(account.address).then(balance => {
+        setBalance(balance)
+      })
+    }
+  }, [account])
+
+  return { loading, account, balance }
 }
 
 export { useAccount }

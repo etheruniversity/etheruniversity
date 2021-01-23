@@ -26,14 +26,16 @@ Configuration occurs through environment variables. Create a `.env.development` 
 
 ### Required Variables
 
-- `INFURA_WEBSOCKET_ENDPOINT`: the websocket endpoint from Infura to access their ETH node
+- `INFURA_PROJECT_ID`: the Infura project id
+- `TESTNET_NAME`: the name of the testnet we are deploying to. For mainnet, set this value to `mainnet`.
 
 ### Example
 
 Here's an example `.env.development` file.
 
 ```
-INFURA_WEBSOCKET_ENDPOINT="wss://ropsten.infura.io/ws/v3/somenumbersandletters"
+TESTNET_NAME="goerli"
+INFURA_PROJECT_ID="somenumbersandletters"
 ```
 
 ## Stack
