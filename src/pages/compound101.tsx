@@ -27,9 +27,10 @@ const ADDRESS_OBJ = {
 };
 
 const ADDRESS = ADDRESS_OBJ.GOERLI;
+const ETH_MANTISSA = 1e18;
 
 const CUSDC_ABI = require('../ABIs/cUSDC_ABI.json');
-const CUSDC_DECIMALS = 1e18;
+const CUSDC_DECIMALS = 1e8;
 const USDC_ABI = require('../ABIs/ERC20_ABI.json');
 const USDC_DECIMALS = 1e6;
 
@@ -58,14 +59,14 @@ const Compound101 = () => {
     }
     const cUSDCContract = new web3.eth.Contract(CUSDC_ABI, ADDRESS.CUSDC);
     cUSDCContract.methods.supplyRatePerBlock().call().then((ratePerBlock) => {
-      const growthPerBlock = 1.0 + parseFloat(ratePerBlock) / CUSDC_DECIMALS
-      const usdcApy = 100 * (Math.pow(growthPerBlock, BLOCKS_PER_YEAR) - 1)
+      const growthPerBlock = 1.0 + parseFloat(ratePerBlock) / ETH_MANTISSA;
+      const usdcApy = 100 * (Math.pow(growthPerBlock, BLOCKS_PER_YEAR) - 1);
       setCurrentUSDCApy(usdcApy);
     });
     if (accountLoading || !account) {
       return
     }
-    web3.eth.getBalance(account.address).then(parseFloat).then(a => a / 1e18).then(setCurrentWalletETHBalance);
+    web3.eth.getBalance(account.address).then(parseFloat).then(a => a / ETH_MANTISSA).then(setCurrentWalletETHBalance);
 
     const USDCContract = new web3.eth.Contract(USDC_ABI, ADDRESS.USDC);
     USDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(setCurrentWalletUSDCBalance);
@@ -75,7 +76,7 @@ const Compound101 = () => {
     CUSDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / CUSDC_DECIMALS).then(setDepositAmount);
 
     const updateExchangeRate = () => {
-      CUSDCContract.methods.exchangeRateCurrent().call().then(parseFloat).then(a => a / USDC_DECIMALS).then(setUsdcPerCusdcRate);
+      CUSDCContract.methods.exchangeRateCurrent().call().then(parseFloat).then(a => a / (ETH_MANTISSA * USDC_DECIMALS * Math.pow(CUSDC_DECIMALS, -1))).then(setUsdcPerCusdcRate);
       setTimeout(updateExchangeRate, 10000) // Poll indefinitely
     }
     updateExchangeRate(); // Start polling
@@ -122,6 +123,7 @@ const signTx = (account, web3, tx) => {
     }).then(console.log);
   });
 }
+
 const depositButtonHandler = (account, web3, amount) => {
   const CUSDCContract = new web3.eth.Contract(CUSDC_ABI, ADDRESS.CUSDC);
   CUSDCContract.methods.mint(1 * USDC_DECIMALS).call().then(console.log);
