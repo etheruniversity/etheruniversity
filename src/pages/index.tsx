@@ -1,5 +1,6 @@
-import { PageProps, navigate } from "gatsby"
-import React, { useEffect } from "react"
+import { PageProps } from "gatsby"
+import React from "react"
+import { RedirectPage } from "../components"
 
 /**
  * This component redirects users from `/` (the index route) to `/home` (the
@@ -13,14 +14,8 @@ import React, { useEffect } from "react"
  * highlighted. This is not desired behavior; to mitigate this we move the home
  * page from `/` (matched by `/*`) to `/home` (matched by `/home/*`).
  */
-const IndexPage: React.FC<PageProps> = () => {
-  useEffect(() => {
-    navigate("/home", {
-      replace: true,
-    })
-  }, [])
-
-  return <></>
+const IndexPage: React.FC<PageProps> = props => {
+  return <RedirectPage {...props} to="/home" />
 }
 
 export default IndexPage

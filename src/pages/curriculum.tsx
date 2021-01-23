@@ -10,9 +10,9 @@ import { Quest } from "../types"
 const quests: Quest[] = [
   {
     title: "Ethereum 101: Introduction to Ethereum",
-    link: "/ethereum101",
+    link: "/c/ethereum101",
     description: "Basics of Ethereum",
-    released: false,
+    released: true,
   },
   {
     title: "Tokens 101: Introduction to Tokens",
