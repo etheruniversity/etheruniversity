@@ -13,4 +13,4 @@ const Ethereum101Page: React.FC<PageProps> = () => {
   )
 }
 
-export { Ethereum101Page }
+export default Ethereum101Page
