@@ -7,15 +7,21 @@ import { useWeb3, useAccount} from "../hooks"
 // Source: https://github.com/compound-finance/compound-config
 const ADDRESS_OBJ = {
   MAINNET: {
+    CDAI: "0x5d3a536e4d6dbd6114cc1ead35777bab948e3643",
     CUSDC: "0x39AA39c021dfbaE8faC545936693aC917d5E7563",
+    DAI: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
     USDC: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
   },
   ROPSTEN: {
+    CDAI: "0xf0d0eb522cfa50b716b3b1604c4f0fa6f04376ad",
     CUSDC: "0x8af93cae804cc220d1a608d4fa54d1b6ca5eb361",
+    DAI: "0x31f42841c2db5173425b5223809cf3a38fede360",
     USDC: "0x0D9C8723B343A8368BebE0B5E89273fF8D712e3C"
   },
   GOERLI: {
+    CDAI: "0x822397d9a55d0fefd20f5c4bcab33c5f65bd28eb",
     CUSDC: "0xcec4a43ebb02f9b80916f1c718338169d6d5c1f0",
+    DAI: "0xdc31Ee1784292379Fbb2964b3B9C4124D8F89C60",
     USDC: "0xd87ba7a50b2e7e660f678a895e4b72e7cb4ccd9c"
   }
 };
