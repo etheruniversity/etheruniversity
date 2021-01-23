@@ -36,8 +36,8 @@ The variable names are prefixed with `GATSBY_` so they are accessible in browser
 Here's an example `.env.development` file.
 
 ```
-TESTNET_NAME="goerli"
-INFURA_PROJECT_ID="somenumbersandletters"
+GATSBY_TESTNET_NAME="goerli"
+GATSBY_INFURA_PROJECT_ID="somenumbersandletters"
 ```
 
 ## Stack
