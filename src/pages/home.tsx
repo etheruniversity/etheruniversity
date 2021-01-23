@@ -1,3 +1,4 @@
+import ButtonLink from "ethereum-org-website/src/components/ButtonLink"
 import {
   ButtonPrimary,
   CardContainer,
@@ -25,7 +26,7 @@ const HomePage: React.FC<PageProps> = () => {
           </div>
           <Logo size={500} />
         </div>
-        <ButtonPrimary>Get Started</ButtonPrimary>
+        <ButtonLink to="/curriculum">Get Started</ButtonLink>
       </div>
       <Divider />
       <div id="how-it-works">
@@ -47,7 +48,9 @@ const HomePage: React.FC<PageProps> = () => {
             emoji=":trophy:"
           />
         </CardContainer>
-        <ButtonPrimary style={{ marginTop: "2rem" }}>Get Started</ButtonPrimary>
+        <div style={{ marginTop: "2rem" }}>
+          <ButtonLink to="/curriculum">View Quests</ButtonLink>
+        </div>
       </div>
     </Layout>
   )

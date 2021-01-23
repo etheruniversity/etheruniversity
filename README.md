@@ -26,14 +26,18 @@ Configuration occurs through environment variables. Create a `.env.development` 
 
 ### Required Variables
 
-- `INFURA_WEBSOCKET_ENDPOINT`: the websocket endpoint from Infura to access their ETH node
+The variable names are prefixed with `GATSBY_` so they are accessible in browser JavaScript. See the [Gatsby docs on environment variables](https://www.gatsbyjs.com/docs/how-to/local-development/environment-variables/) for more details.
+
+- `GATSBY_INFURA_PROJECT_ID`: the Infura project id
+- `GATSBY_TESTNET_NAME`: the name of the testnet we are deploying to. For mainnet, set this value to `mainnet`.
 
 ### Example
 
 Here's an example `.env.development` file.
 
 ```
-INFURA_WEBSOCKET_ENDPOINT="wss://ropsten.infura.io/ws/v3/somenumbersandletters"
+GATSBY_TESTNET_NAME="goerli"
+GATSBY_INFURA_PROJECT_ID="somenumbersandletters"
 ```
 
 ## Stack
