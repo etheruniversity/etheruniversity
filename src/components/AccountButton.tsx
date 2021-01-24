@@ -43,7 +43,7 @@ const AccountButton: React.FC<AccountButtonProps> = props => {
             Your address is <b>{address}</b>.
           </p>
           <p>
-            You balance is <b>{web3?.utils.fromWei(balance) ?? 0} ETH</b>.
+            Your balance is <b>{web3?.utils.fromWei(balance) ?? 0} ETH</b>.
           </p>
           {balance === "0" && (
             <p>
