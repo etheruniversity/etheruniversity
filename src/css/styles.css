@@ -1,0 +1,17 @@
+.EthEducationButton {
+  background-color: rgb(28,28,225);
+}
+
+.EthEducationButton:hover:enabled {
+  cursor: pointer;
+  background-color: rgba(28, 28, 225, 0.8) !important;
+  box-shadow: 4px 4px 0px 0px #D2D2F9;
+}
+
+.EthEducationButton:active {
+  background-color: rgba(22.4, 22.4, 180) !important; /*lightTheme.colors.primaryActive*/
+}
+
+.EthEducationButton:disabled {
+  background-color: transparent;
+}
