@@ -19,7 +19,6 @@ const Compound101 = () => {
   const [currentWalletETHBalance, setCurrentWalletETHBalance] = useState(0.0);
   const [currentAllowance, setCurrentAllowance] = useState(0.0);
   const [currentUSDCApy, setCurrentUSDCApy] = useState(0.0);
-  const [averageTraditionalBankAPY, setAverageTraditionalBankAPY] = useState(0.0);
   const [depositBlock, setDepositBlock] = useState(0.0);
   const [depositAmount, setDepositAmount] = useState(0.0);
   const [usdcPerCusdcRate, setUsdcPerCusdcRate] = useState(0.0);
@@ -65,16 +64,18 @@ const Compound101 = () => {
         <h1>Compound 101</h1>
         <p>Last updated January 20, 2021</p>
       </div>
-      <p>The Compound protocol lets you deposit cryptoassets like ETH and USDC. You'll be rewarded for these deposits by earning inteest, similar to a savings account at your traditional bank. The Compound Protocol often gives higher interest rates than your bank. Sometimes, these interest rates get as high as 20% APY. Meanwhile, the average traditional bank savings account in the US currenlty only pays {averageTraditionalBankAPY.toFixed(2)}%. Compound also lets you take out loans, but we'll get to that in another quest.</p>
-      <p>First, you'll need to give the Compound protocol the ability to withdraw your funds.</p>
+      <p>Compound is a financial protocol that lets you deposit tokens like USDC, ETH, or DAI and earn a yield on them similar to a bank. However, the yield rates on compound are often larger than what your savings account would give you.</p>
+      <p>Let’s get started. First you need to allow Compound to access to your USDC.</p>
       <div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{approveButtonHandler(account, web3, txPending)}} disabled={isTransactionPending}>Approve</EthEducationButton></div>
-      <p>Awesome, now we can get to the real fun. Compound lets you earn interest on many types of cryptoassets. In this case, we'll deposit USDC. 1 USDC = $1 USD, so it's easier to compare to a traditional savings account. Once your USDC is deposited in Compound, you can't send it to others. The USDC is "locked" in Compound until you withdraw it.</p>
+      <p>Great, now we can deposit some of our USDC to earn yield. Please note, this action will lock your USDC. This means you can't send it to others until you withdraw it from Compound.</p>
       <InteractionCard title="Compound Deposit" sideTextTitle="Your Wallet" sideTextBody={<span>USDC Balance: {currentWalletUSDCBalance.toFixed(2)}<br/>ETH Balance: {currentWalletETHBalance.toFixed(2)}</span>} circleText={<span>APY {currentUSDCApy.toFixed(2)}%</span>} button={<EthEducationButton onClick={()=>{depositButtonHandler(account, web3, Math.floor(currentWalletUSDCBalance), txPending)}} disabled={currentAllowance < currentWalletUSDCBalance - .1 || isTransactionPending}>Deposit All USDC</EthEducationButton>} />
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tortor posuere ac ut consequat semper viverra nam. Arcu bibendum at varius vel pharetra vel turpis nunc. Quis viverra nibh cras pulvinar mattis. Tempus egestas sed sed risus pretium. Eros in cursus turpis massa tincidunt dui ut ornare. Cras sed felis eget velit. Consectetur libero id faucibus nisl tincidunt eget nullam non. Tellus id interdum velit laoreet. Morbi blandit cursus risus at ultrices.</p>
-      <p>You earn interest every block. In the {earnings.block - depositBlock} blocks since you deposited, your balance has grown {earnings.usdcEarned} USDC, from {depositAmount * usdcPerCusdcRate} USDC to {depositAmount+earnings.usdcEarned} USDC. You’ve also earned {earnings.compEarned} COMP, the governance token. You can do xyz with the token, or exchange it for USDC on Uniswap.</p>
+      <p>Awesome, now you’re earning yield. The yield you earn is measured as a percent of the amount you have deposited. For example, if yield is 10% annual percentage rate (APY) and you deposited $1000 then at the end of the year you’ll have earned $100 in interest.</p>
+      <p>This yield accrues every 13 seconds with a new Ethereum block. This means you can watch your earnings grow in real time and withdraw them whenever you’d like.</p>
+      <p>In the {earnings.block - depositBlock} blocks since you deposited, your balance has grown {earnings.usdcEarned} USDC, from {depositAmount * usdcPerCusdcRate} USDC to {depositAmount+earnings.usdcEarned} USDC. You’ve also earned {earnings.compEarned} COMP, the governance token. You can do xyz with the token, or exchange it for USDC on Uniswap.</p>
       <InteractionCard title="Compound Deposit" sideTextTitle="Time Since Deposit" sideTextBody={<span>{earnings.block - depositBlock} blocks</span>} circleText={<span>BALANCE <span style={{fontSize: 16}}>${/*(depositAmount+earnings.usdcEarned)*/(depositAmount * usdcPerCusdcRate).toString()}</span></span>} button={<EthEducationButton disabled={isTransactionPending}>Withdraw All USDC</EthEducationButton>} />
-      <p>You might be wondering where your interest income is coming from. In a traditional bank savings account, the bank lends out your money to other people for them to buy homes. You're money is safe because if those people stop paying, the bank takes back their house and sells it. The Compound Protocol works in a similar fashion. But, it has stricter rules about when it lends out money and what happens if a borrower doesn't pay their loan. using youThis section is all about the technical TODO, talk about the asset pools and collaterlaization ratios.</p>
-      <Link to="#">Dive deep into how Compound works</Link>
+      <p>To understand where this yield is coming from it helps to go back to that analogy of the bank. When you deposit money in your bank, they lend it out to others who pay the bank interest. This may be in the form of a mortgage or a credit card loan. The banks take some of the interest which they earn and give you some amount of it back.</p>
+      <p>The analogy goes a step further because compound just like your bank is lending out the money. Your money, along with the money others deposit, goes into a large pool. Borrowers can borrow money from this pool. The interest is set by supply and demand.</p>
+      <Link to="https://medium.com/compound-finance/faq-1a2636713b69">Dive deep into how Compound works</Link>
     </Layout>
   )
 }
