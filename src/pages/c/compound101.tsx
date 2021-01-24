@@ -1,9 +1,9 @@
-import React, { useState, useEffect} from "react"
-import { Link } from "gatsby"
-import { Layout, SEO, InteractionCard} from "../components/"
 import ButtonLink from "ethereum-org-website/src/components/ButtonLink"
-import { useWeb3, useAccount} from "../hooks"
-import { ADDRESS } from "../config"
+import { Link } from "gatsby"
+import React, { useState, useEffect} from "react"
+import { Layout, SEO, InteractionCard} from "../../components/"
+import { ADDRESS } from "../../config"
+import { useWeb3, useAccount} from "../../hooks"
 
 const ETH_MANTISSA = 1e18;
 
