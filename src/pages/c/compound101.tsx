@@ -25,10 +25,14 @@ const Compound101 = () => {
   const [depositAmount, setDepositAmount] = useState(0.0);
   const [usdcPerCusdcRate, setUsdcPerCusdcRate] = useState(0.0);
   const [earnings, setEarnings] = useState({block: 0, usdcEarned: 0, compEarned: 0});
-  const depositButton = <div onClick={()=>{console.log("HI");depositButtonHandler(account, web3, Math.floor(currentWalletUSDCBalance))}}><ButtonLink to="#" isSecondary={currentAllowance < currentWalletUSDCBalance - .1}>Deposit All USDC</ButtonLink></div>
-  const withdrawButton = <ButtonLink to="#">Withdraw All USDC</ButtonLink>
+  const [isTransactionPending, setIsTransactionPending] = useState(false);
 
-  const { web3, loading: web3loading } = useWeb3();
+  const { web3, loading: web3loading, transactionPendingObserver } = useWeb3();
+  const txPending = (is) => {
+    setIsTransactionPending(is);
+    transactionPendingObserver.publish(is);
+  }
+
   const { account, loading: accountLoading } = useAccount();
 
   useEffect(() => {
@@ -64,12 +68,12 @@ const Compound101 = () => {
       </div>
       <p>The Compound protocol lets you deposit cryptoassets like ETH and USDC. You'll be rewarded for these deposits by earning inteest, similar to a savings account at your traditional bank. The Compound Protocol often gives higher interest rates than your bank. Sometimes, these interest rates get as high as 20% APY. Meanwhile, the average traditional bank savings account in the US currenlty only pays {averageTraditionalBankAPY.toFixed(2)}%. Compound also lets you take out loans, but we'll get to that in another quest.</p>
       <p>First, you'll need to give the Compound protocol the ability to withdraw your funds.</p>
-      <div style={{textAlign: "center", marginBottom: 20}} onClick={()=>{console.log("HI");approveButtonHandler(account, web3)}}><ButtonLink to="#">Approve</ButtonLink></div>
+      <div style={{textAlign: "center", marginBottom: 20}} onClick={()=>{approveButtonHandler(account, web3, txPending)}}><ButtonLink to="#" isSecondary={isTransactionPending}>Approve</ButtonLink></div>
       <p>Awesome, now we can get to the real fun. Compound lets you earn interest on many types of cryptoassets. In this case, we'll deposit USDC. 1 USDC = $1 USD, so it's easier to compare to a traditional savings account. Once your USDC is deposited in Compound, you can't send it to others. The USDC is "locked" in Compound until you withdraw it.</p>
-      <InteractionCard title="Compound Deposit" sideTextTitle="Your Wallet" sideTextBody={<span>USDC Balance: {currentWalletUSDCBalance.toFixed(2)}<br/>ETH Balance: {currentWalletETHBalance.toFixed(2)}</span>} circleText={<span>APY {currentUSDCApy.toFixed(2)}%</span>} button={depositButton} />
+      <InteractionCard title="Compound Deposit" sideTextTitle="Your Wallet" sideTextBody={<span>USDC Balance: {currentWalletUSDCBalance.toFixed(2)}<br/>ETH Balance: {currentWalletETHBalance.toFixed(2)}</span>} circleText={<span>APY {currentUSDCApy.toFixed(2)}%</span>} button={<div onClick={()=>{depositButtonHandler(account, web3, Math.floor(currentWalletUSDCBalance), txPending)}}><ButtonLink to="#" isSecondary={currentAllowance < currentWalletUSDCBalance - .1 || isTransactionPending}>Deposit All USDC</ButtonLink></div>} />
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Tortor posuere ac ut consequat semper viverra nam. Arcu bibendum at varius vel pharetra vel turpis nunc. Quis viverra nibh cras pulvinar mattis. Tempus egestas sed sed risus pretium. Eros in cursus turpis massa tincidunt dui ut ornare. Cras sed felis eget velit. Consectetur libero id faucibus nisl tincidunt eget nullam non. Tellus id interdum velit laoreet. Morbi blandit cursus risus at ultrices.</p>
       <p>You earn interest every block. In the {earnings.block - depositBlock} blocks since you deposited, your balance has grown {earnings.usdcEarned} USDC, from {depositAmount * usdcPerCusdcRate} USDC to {depositAmount+earnings.usdcEarned} USDC. You’ve also earned {earnings.compEarned} COMP, the governance token. You can do xyz with the token, or exchange it for USDC on Uniswap.</p>
-      <InteractionCard title="Compound Deposit" sideTextTitle="Time Since Deposit" sideTextBody={<span>{earnings.block - depositBlock} blocks</span>} circleText={<span>BALANCE <span style={{fontSize: 16}}>${/*(depositAmount+earnings.usdcEarned)*/(depositAmount * usdcPerCusdcRate).toString()}</span></span>} button={withdrawButton} />
+      <InteractionCard title="Compound Deposit" sideTextTitle="Time Since Deposit" sideTextBody={<span>{earnings.block - depositBlock} blocks</span>} circleText={<span>BALANCE <span style={{fontSize: 16}}>${/*(depositAmount+earnings.usdcEarned)*/(depositAmount * usdcPerCusdcRate).toString()}</span></span>} button={<ButtonLink to="#" isSecondary={isTransactionPending}>Withdraw All USDC</ButtonLink>} />
       <p>You might be wondering where your interest income is coming from. In a traditional bank savings account, the bank lends out your money to other people for them to buy homes. You're money is safe because if those people stop paying, the bank takes back their house and sells it. The Compound Protocol works in a similar fashion. But, it has stricter rules about when it lends out money and what happens if a borrower doesn't pay their loan. using youThis section is all about the technical TODO, talk about the asset pools and collaterlaization ratios.</p>
       <Link to="#">Dive deep into how Compound works</Link>
     </Layout>
@@ -84,21 +88,23 @@ const headerStyle = {
   flexWrap: "wrap"
 }
 
-const signAndSendTx = async (account, web3, tx) => {
+const signAndSendTx = async (account, web3, tx, txPending) => {
   tx = await account.signTransaction(tx)
   tx = tx.rawTransaction;
+  txPending(true);
   const txReceipt = await web3.eth.sendSignedTransaction(tx, (error, result) => {
     if (error) {
       console.error("Transaction sending failed");
       console.error(error);
+      txPending(false);
     } else {
       console.log("Transaction sending succeeded");
     }
   });
-  console.log(txReceipt);
+  txPending(false);
 }
 
-const depositButtonHandler = (account, web3, amount) => {
+const depositButtonHandler = (account, web3, amount, txPending) => {
   const CUSDCContract = new web3.eth.Contract(CUSDC_ABI, ADDRESS.CUSDC);
   CUSDCContract.methods.mint(1 * USDC_DECIMALS).call().then(console.log);
   const tx = {
@@ -108,10 +114,10 @@ const depositButtonHandler = (account, web3, amount) => {
     gasPrice: 1,
     gas: 300000
   };
-  signAndSendTx(account, web3, tx)
+  signAndSendTx(account, web3, tx, txPending)
 }
 
-const approveButtonHandler = (account, web3) => {
+const approveButtonHandler = (account, web3, txPending) => {
   const USDCContract = new web3.eth.Contract(USDC_ABI, ADDRESS.USDC);
   const tx = {
     from: account.address,
@@ -121,7 +127,7 @@ const approveButtonHandler = (account, web3) => {
     gas: 300000
   };
   USDCContract.methods.approve(ADDRESS.CUSDC, 1e6 * USDC_DECIMALS).call().then(console.log);
-  signAndSendTx(account, web3, tx)
+  signAndSendTx(account, web3, tx, txPending)
 }
 
 export default Compound101

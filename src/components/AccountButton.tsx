@@ -6,7 +6,7 @@ import {
   H2,
 } from "ethereum-org-website/src/components/SharedStyledComponents"
 import { capitalize } from "lodash"
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { ETHERSCAN_ENDPOINT, FAUCET_LINK, TESTNET_NAME } from "../config"
 import { useAccount, useWeb3 } from "../hooks"
 
@@ -14,15 +14,26 @@ interface AccountButtonProps
   extends React.ComponentProps<typeof ButtonPrimary> {}
 
 const AccountButton: React.FC<AccountButtonProps> = props => {
-  const { web3 } = useWeb3()
+  const { web3, transactionPendingObserver } = useWeb3()
   const { account, loading, balance } = useAccount()
   const [accountModalIsOpen, setAccountModalIsOpen] = useState(false)
+  const [isTransactionPending, setIsTransactionPending] = useState(false)
   const address = account?.address
+  useEffect(()=> {
+    transactionPendingObserver.subscribe('accountButton', (isTransactionPending) => {
+      setIsTransactionPending(isTransactionPending)
+    })
+    return () => {
+      transactionPendingObserver.unsubscribe('accountButton')
+    }
+  })
 
   return (
     <>
       <ButtonPrimary onClick={() => setAccountModalIsOpen(true)} {...props}>
-        {loading ? "Connecting..." : "Connected to Blockchain"}
+        {loading ? "Connecting..."
+                 : (isTransactionPending ? "Transaction in Queue"
+                                         : "Connected to Blockchain")}
       </ButtonPrimary>
       {/* Just hide the entire element when not open. Overlay is causing z-index issues */}
       {accountModalIsOpen && (
