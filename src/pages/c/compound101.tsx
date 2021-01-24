@@ -7,9 +7,9 @@ import { useWeb3, useAccount} from "../../hooks"
 
 const ETH_MANTISSA = 1e18;
 
-const CUSDC_ABI = require('../ABIs/cUSDC_ABI.json');
+const CUSDC_ABI = require('../../ABIs/cUSDC_ABI.json');
 const CUSDC_DECIMALS = 1e8;
-const USDC_ABI = require('../ABIs/ERC20_ABI.json');
+const USDC_ABI = require('../../ABIs/ERC20_ABI.json');
 const USDC_DECIMALS = 1e6;
 
 const BLOCKS_PER_YEAR = 4 * 60 * 24 * 365; // based on 4 blocks occurring every minute
