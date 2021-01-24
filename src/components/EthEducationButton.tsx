@@ -12,7 +12,6 @@ const EthEducationButton: React.FC = (props) => {
     borderRadius: "0.25em",
     textAlign: "center"
   }
-  console.log(lightTheme.colors.primary+ " !important")
   const primary = {
     // backgroundColor: lightTheme.colors.primary + " !important", I'm not sure why this wouldn't work so I put it in styles.css
     color: lightTheme.colors.buttonColor,
@@ -24,7 +23,6 @@ const EthEducationButton: React.FC = (props) => {
     border: "1px solid " + lightTheme.colors.text
   };
   const styles = props.disabled ? {...base, ...secondary} : {...base, ...primary};
-  console.log(styles)
   return <button {...props} className="EthEducationButton" style={styles} />
 }
 
