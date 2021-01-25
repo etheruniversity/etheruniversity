@@ -50,6 +50,8 @@ The variable names are prefixed with `GATSBY_` so they are accessible in browser
 - `GATSBY_TESTNET_NAME`: the name of the testnet we are deploying to. For mainnet, set this value to `mainnet`.
 - `GATSBY_ETHEREUM101_CONTRACT_ADDRESS`: the address of the Ethereum 101 contract
 
+Alternatively, set the `GATSBY_PRIVATE_NODE` variable instead of `GATSBY_INFURA_PROJECT_ID` to access a private node directly rather than through Infura. Something like `GATSBY_PRIVATE_NODE=http://myprivatenode.com:8645`.
+
 #### Smart Contracts
 
 - `INFURA_PROJECT_ID`: the Infura project id to access testnets to deploy contracts to
