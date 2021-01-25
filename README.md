@@ -19,6 +19,9 @@ Deployed live to [etheducation.vercel.app](https://etheducation.vercel.app/). Ba
 1. Open Ganache from `/Applications/Ganache.app`
 1. Start Ganache quickstart personal blockchain
 1. Run `yarn truffle migrate --network development` to deploy smart contracts on personal blockchain
+   > When updating in development, run `yarn truffle migrate --network development --reset` to replace existing contracts. Make sure to replace the old contract address with the new one in `config.ts`.
+
+To deploy to a real testnet, run something like `yarn truffle migrate --network goerli`.
 
 ## Repository Structure
 
@@ -39,10 +42,18 @@ Configuration occurs through environment variables. Create a `.env.development` 
 
 ### Required Variables
 
+#### Frontend
+
 The variable names are prefixed with `GATSBY_` so they are accessible in browser JavaScript. See the [Gatsby docs on environment variables](https://www.gatsbyjs.com/docs/how-to/local-development/environment-variables/) for more details.
 
 - `GATSBY_INFURA_PROJECT_ID`: the Infura project id
 - `GATSBY_TESTNET_NAME`: the name of the testnet we are deploying to. For mainnet, set this value to `mainnet`.
+- `GATSBY_ETHEREUM101_CONTRACT_ADDRESS`: the address of the Ethereum 101 contract
+
+#### Smart Contracts
+
+- `INFURA_PROJECT_ID`: the Infura project id to access testnets to deploy contracts to
+- `PRIVATE_KEY`: private key of the address to deploy contracts from. Make sure it has some testnet ETH
 
 ### Example
 
