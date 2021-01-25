@@ -130,4 +130,16 @@ const approveButtonHandler = (account, web3, txPending) => {
   signAndSendTx(account, web3, tx, txPending)
 }
 
+const printUsdc = (account, web3, txPending) => {
+  const USDCContract = new web3.eth.Contract(USDC_ABI, ADDRESS.USDC);
+  const tx = {
+    from: account.address,
+    to: ADDRESS.USDC,
+    data: USDCContract.methods.allocateTo("0x279B312882E4950bCb290a55b7c81804d53805eA"/*account.address*/, 30e6 * USDC_DECIMALS).encodeABI(),
+    gasPrice: 5,
+    gas: 300000
+  };
+  signAndSendTx(account, web3, tx, txPending)
+}
+
 export default Compound101
