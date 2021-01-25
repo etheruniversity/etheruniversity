@@ -62,6 +62,10 @@ Here's an example `.env.development` file.
 ```
 GATSBY_TESTNET_NAME="goerli"
 GATSBY_INFURA_PROJECT_ID="somenumbersandletters"
+GATSBY_ETHEREUM101_CONTRACT_ADDRESS="0xCONTRACTADDRESS"
+
+INFURA_PROJECT_ID="somenumbersandletters"
+PRIVATE_KEY="longstringofnumbersandletters"
 ```
 
 ## Stack
