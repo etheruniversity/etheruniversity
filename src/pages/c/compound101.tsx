@@ -1,4 +1,4 @@
-import { Link } from "gatsby"
+import Link from "ethereum-org-website/src/components/Link"
 import React, { useState, useEffect} from "react"
 import { Layout, SEO, InteractionCard, EthEducationButton} from "../../components/"
 import { ADDRESS } from "../../config"
@@ -75,7 +75,7 @@ const Compound101 = () => {
       <InteractionCard title="Compound Deposit" sideTextTitle="Time Since Deposit" sideTextBody={<span>{earnings.block - depositBlock} blocks</span>} circleText={<span>BALANCE <span style={{fontSize: 16}}>${/*(depositAmount+earnings.usdcEarned)*/(depositAmount * usdcPerCusdcRate).toString()}</span></span>} button={<EthEducationButton disabled={isTransactionPending}>Withdraw All USDC</EthEducationButton>} />
       <p>To understand where this yield is coming from it helps to go back to that analogy of the bank. When you deposit money in your bank, they lend it out to others who pay the bank interest. This may be in the form of a mortgage or a credit card loan. The banks split their profit with you. In this scenario, they have a lot of control.</p>
       <p>The analogy works well with the Compound Protocol as a replacement for the bank. Just like your bank, Compound is lending out the money. Your money, along with the money others deposit, goes into a large pool. Borrowers can borrow money from this pool provided they have proof they'll pay back their debt. Instead of the bank setting interest rates for borrowers and depositors, the interest rate is set by supply and demand.</p>
-      <Link to="https://medium.com/compound-finance/faq-1a2636713b69">Dive deep into how Compound works</Link>
+      <Link href="https://medium.com/compound-finance/faq-1a2636713b69">Dive deep into how Compound works</Link>
     </Layout>
   )
 }
