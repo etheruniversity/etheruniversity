@@ -34,19 +34,24 @@ function useAccount() {
     setLoading(false)
   }, [web3Loading])
 
-  function getBalance(address: string) {
-    web3?.eth.getBalance(address).then(balance => {
-      setBalance(balance)
-    })
+  function refetchBalance() {
+    if (!!account) {
+      web3?.eth.getBalance(account.address).then(balance => {
+        setBalance(balance)
+      })
+    }
   }
 
   useEffect(() => {
-    if (!!account) {
-      getBalance(account.address)
-    }
+    refetchBalance()
   }, [account])
 
-  return { loading, account, balance, refetchBalance: getBalance }
+  return {
+    loading,
+    account,
+    balance,
+    refetchBalance,
+  }
 }
 
 export { useAccount }
