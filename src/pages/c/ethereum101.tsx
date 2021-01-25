@@ -3,17 +3,158 @@ import {
   H1,
   H2,
   ButtonPrimary,
+  ButtonSecondary,
 } from "ethereum-org-website/src/components/SharedStyledComponents"
 import { PageProps } from "gatsby"
 import { capitalize } from "lodash"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Layout, SEO } from "../../components"
-import { FAUCET_LINK, TESTNET_NAME } from "../../config"
-import { useAccount, useWeb3 } from "../../hooks"
+import {
+  ETHEREUM101_CONTRACT_ADDRESS,
+  FAUCET_LINK,
+  TESTNET_NAME,
+} from "../../config"
+import { useAccount, useContract, useWeb3 } from "../../hooks"
+
+const {
+  abi: ETHEREUM101_ABI,
+} = require("../../../build/contracts/Ethereum101.json")
 
 const Ethereum101Page: React.FC<PageProps> = () => {
-  const { web3 } = useWeb3()
-  const { account, balance } = useAccount()
+  const [loading, setLoading] = useState(false)
+  const { web3, loading: web3Loading } = useWeb3()
+  const {
+    account,
+    balance,
+    refetchBalance,
+    loading: accountLoading,
+  } = useAccount()
+  const { contract, loading: contractLoading } = useContract(
+    ETHEREUM101_ABI,
+    ETHEREUM101_CONTRACT_ADDRESS
+  )
+  const [contractBalance, setContractBalance] = useState(0)
+
+  const [message, setMessage] = useState("")
+  const [contractMessage, setContractMessage] = useState(0)
+  const [quizAnswers, setQuizAnswers] = useState(["", ""])
+
+  async function getContractBalance() {
+    if (account) {
+      let balance = await contract?.methods.balanceOf(account.address).call()
+      setContractBalance(balance)
+    }
+  }
+
+  async function getContractMessage() {
+    if (account) {
+      let message = await contract?.methods.messageOf(account.address).call()
+      setContractMessage(message)
+    }
+  }
+
+  useEffect(() => {
+    getContractBalance()
+    getContractMessage()
+  }, [account])
+
+  async function step1_deposit() {
+    if (!contract || !account || !web3) {
+      return
+    }
+
+    setLoading(true)
+
+    contract?.methods
+      .step1_deposit()
+      .send({
+        from: account.address,
+        value: web3.utils.toWei("1", "ether"),
+        gas: 150000,
+        gasPrice: web3.utils.toWei("25", "gwei"),
+      })
+      .on("error", error => {
+        console.error(error)
+        alert("Error: see console")
+        setLoading(false)
+      })
+      .on("confirmation", (confirmationNumber: number) => {
+        if (confirmationNumber === 1) {
+          refetchBalance()
+          setLoading(false)
+          getContractBalance()
+        }
+      })
+  }
+
+  async function step2_withdraw() {
+    if (!contract || !account || !web3) {
+      return
+    }
+
+    setLoading(true)
+
+    contract?.methods
+      .step2_withdraw()
+      .send({
+        from: account.address,
+        value: 0,
+        gas: 150000,
+        gasPrice: web3.utils.toWei("25", "gwei"),
+      })
+      .on("error", error => {
+        console.error(error)
+        alert("Error: see console")
+        setLoading(false)
+      })
+      .on("confirmation", (confirmationNumber: number) => {
+        if (confirmationNumber === 1) {
+          refetchBalance()
+          setLoading(false)
+          getContractBalance()
+        }
+      })
+  }
+
+  async function step3_saveMessage() {
+    if (!contract || !account || !web3) {
+      return
+    }
+
+    setLoading(true)
+
+    contract?.methods
+      .step3_saveMessage(message)
+      .send({
+        from: account.address,
+        value: 0,
+        gas: 150000,
+        gasPrice: web3.utils.toWei("25", "gwei"),
+      })
+      .on("error", error => {
+        console.error(error)
+        alert("Error: see console")
+        setLoading(false)
+      })
+      .on("confirmation", (confirmationNumber: number) => {
+        if (confirmationNumber === 1) {
+          refetchBalance()
+          setLoading(false)
+          getContractMessage()
+        }
+      })
+  }
+
+  async function submitQuizAnswers() {
+    if (!contract || !account || !web3) {
+      return
+    }
+
+    const allCorrect = await contract.methods
+      .submitQuizAnswers(quizAnswers)
+      .call()
+    alert(allCorrect ? "Correct!" : "Try again, at least one answer was wrong.")
+  }
 
   return (
     <Layout>
@@ -41,30 +182,112 @@ const Ethereum101Page: React.FC<PageProps> = () => {
         </ButtonLink>
       </p>
       <p>
-        You have <b>{web3?.utils.fromWei(balance)}</b> ETH on the{" "}
-        <b>{capitalize(TESTNET_NAME)}</b> testnet. Now, try sending us some ETH.
+        You have <b>{web3?.utils.fromWei(balance)} ETH</b> on the{" "}
+        <b>{capitalize(TESTNET_NAME)}</b> testnet. Now, try sending us some ETH
+        (technically, you're sending ETH to a smart contract we've deployed).
       </p>
       <p>
-        <ButtonPrimary>Send 0.1 ETH to Us</ButtonPrimary>
+        <ButtonPrimary onClick={step1_deposit} disabled={loading}>
+          {loading ? "Waiting..." : "Send 1 ETH to Us"}
+        </ButtonPrimary>
+        <ButtonSecondary
+          onClick={refetchBalance}
+          disabled={loading}
+          style={{ marginLeft: "1rem" }}
+        >
+          Refresh Balance
+        </ButtonSecondary>
       </p>
-      <p>You got less than 0.1 ETH since you had to spend some ETH on gas.</p>
-      <p>Now, send some data with your transaction.</p>
+      <p>
+        So far, you've sent us{" "}
+        <b>{web3?.utils.fromWei(contractBalance.toString())} ETH</b>.
+      </p>
+      <p>
+        Note that you spent more than 1 ETH since you had to spend some ETH on
+        gas — think of it like a transaction fee.
+      </p>
+      <p>Now, get your ETH back.</p>
+      <p>
+        <ButtonPrimary onClick={step2_withdraw} disabled={loading}>
+          {loading ? "Waiting..." : "Get ETH Back"}
+        </ButtonPrimary>
+      </p>
+      <p>
+        Note that you got less than 1 ETH since the smart contract needed to
+        spend some ETH on gas to get your balance back to you.
+      </p>
+      <p>
+        Now, send some data with your transaction. Enter some text below for it
+        to be saved on the blockchain forever. Note that each character you
+        store will cost extra ETH.
+      </p>
+      <input
+        value={message}
+        onChange={e => setMessage(e.target.value)}
+        placeholder="Enter Data to Store on Blockchain"
+      />
+      <p>
+        <ButtonPrimary onClick={step3_saveMessage} disabled={loading}>
+          {loading ? "Waiting..." : "Send Data to Contract"}
+        </ButtonPrimary>
+      </p>
+      <p>
+        You saved "<b>{contractMessage}</b>" on the blockchain.
+      </p>
       <p>Here is what your transaction looks like on the blockchain:</p>
       <H2>Quick Quiz</H2>
+      <p>
+        This quiz is all on the blockchain. If you answer all the questions
+        correctly, you'll get a special NFT.
+      </p>
       <p>1. What kind of network is {capitalize(TESTNET_NAME)}?</p>
       <p>
-        <ButtonPrimary>A. Testnet</ButtonPrimary>
+        <ButtonSecondary
+          onClick={() => {
+            quizAnswers[0] = "A"
+            setQuizAnswers([...quizAnswers])
+          }}
+        >
+          A. Testnet {quizAnswers[0] === "A" && "(selected)"}
+        </ButtonSecondary>
       </p>
       <p>
-        <ButtonPrimary>B. Mainnet</ButtonPrimary>
+        <ButtonSecondary
+          onClick={() => {
+            quizAnswers[0] = "B"
+            setQuizAnswers([...quizAnswers])
+          }}
+        >
+          B. Mainnet {quizAnswers[0] === "B" && "(selected)"}
+        </ButtonSecondary>
       </p>
-      <p>2. Why didn't we get the full amount of ETH you sent to us?</p>
+      <p>2. Why didn't you get the full amount of ETH you sent to us?</p>
       <p>
-        <ButtonPrimary>A. Gas</ButtonPrimary>
+        <ButtonSecondary
+          onClick={() => {
+            quizAnswers[1] = "A"
+            setQuizAnswers([...quizAnswers])
+          }}
+        >
+          A. Diesel {quizAnswers[1] === "A" && "(selected)"}
+        </ButtonSecondary>
       </p>
       <p>
-        <ButtonPrimary>B. Diesel</ButtonPrimary>
+        <ButtonSecondary
+          onClick={() => {
+            quizAnswers[1] = "B"
+            setQuizAnswers([...quizAnswers])
+          }}
+        >
+          B. Gas {quizAnswers[1] === "B" && "(selected)"}
+        </ButtonSecondary>
       </p>
+      <ButtonPrimary
+        disabled={quizAnswers.some(it => it === "")}
+        onClick={submitQuizAnswers}
+      >
+        Submit
+      </ButtonPrimary>
     </Layout>
   )
 }
