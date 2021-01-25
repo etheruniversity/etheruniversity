@@ -1,4 +1,5 @@
 import ButtonLink from "ethereum-org-website/src/components/ButtonLink"
+import Link from "ethereum-org-website/src/components/Link"
 import {
   H1,
   H2,
@@ -11,6 +12,7 @@ import React, { useEffect, useState } from "react"
 import { Layout, SEO } from "../../components"
 import {
   ETHEREUM101_CONTRACT_ADDRESS,
+  ETHERSCAN_ENDPOINT,
   FAUCET_LINK,
   TESTNET_NAME,
 } from "../../config"
@@ -184,7 +186,13 @@ const Ethereum101Page: React.FC<PageProps> = () => {
       <p>
         You have <b>{web3?.utils.fromWei(balance)} ETH</b> on the{" "}
         <b>{capitalize(TESTNET_NAME)}</b> testnet. Now, try sending us some ETH
-        (technically, you're sending ETH to a smart contract we've deployed).
+        (technically, you're sending ETH to a{" "}
+        <Link
+          to={`${ETHERSCAN_ENDPOINT}/address/${ETHEREUM101_CONTRACT_ADDRESS}`}
+        >
+          smart contract
+        </Link>{" "}
+        we've deployed).
       </p>
       <p>
         <ButtonPrimary onClick={step1_deposit} disabled={loading}>
