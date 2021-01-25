@@ -33,6 +33,7 @@
     "@types/react-helmet": "^6.1.0",
     "@types/styled-components": "^5.1.7",
     "prettier": "2.2.1",
+    "truffle": "^5.1.63",
     "typescript": "^4.1.3"
   },
   "keywords": [

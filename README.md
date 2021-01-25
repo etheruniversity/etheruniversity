@@ -7,13 +7,26 @@ Deployed live to [etheducation.vercel.app](https://etheducation.vercel.app/). Ba
 1. Clone repository: `git clone https://github.com/etheducation/etheducation`.
 1. Change into the repository directory: `cd etheducation`.
 1. Install dependencies: `yarn install`.
-1. Start development server: `yarn start`.
+
+### Frontend
+
+1. Start Gatsby development server: `yarn start`.
 1. The site will be running at http://localhost:8000.
+
+### Smart Contracts
+
+1. Install Ganache: `brew install --cask ganache`
+1. Open Ganache from `/Applications/Ganache.app`
+1. Start Ganache quickstart personal blockchain
+1. Run `yarn truffle migrate --network development` to deploy smart contracts on personal blockchain
 
 ## Repository Structure
 
+- `migrations`: contains Truffle migrations
 - `src/ABIs`: contains smart contract [ABIs](https://docs.soliditylang.org/en/v0.8.0/abi-spec.html)
 - `src/components`: contains shared components used across the application
+- `src/contracts`: contains smart contract code
+  - `Migrations.sol` is a Truffle-specific contract required for the migrations feature. See [Truffle docs on migrations](https://www.trufflesuite.com/docs/truffle/getting-started/running-migrations#initial-migration) for more details.
 - `src/hooks`: contains shared hooks used across the application
   - Notably, this directory includes the `useAccount` and `useWeb3` hooks which allow React to access web3.
 - `src/images`: contains images used in the application
@@ -56,6 +69,11 @@ GATSBY_INFURA_PROJECT_ID="somenumbersandletters"
   >   <ButtonLink to="/page-2/">Page 2</ButtonLink>
   > )
   > ```
+
+- [Truffle](https://www.trufflesuite.com/truffle)
+  - Truffle is a smart contract development framework
+- [Ganache](https://www.trufflesuite.com/ganache)
+  - Ganache allows one to create their own personal Ethereum blockchain
 
 ## Infrastructure
 
