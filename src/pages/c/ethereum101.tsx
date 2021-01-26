@@ -29,6 +29,7 @@ const Ethereum101Page: React.FC<PageProps> = () => {
     account,
     balance,
     refetchBalance,
+    signTransaction,
     loading: accountLoading,
   } = useAccount()
   const { contract, loading: contractLoading } = useContract(
@@ -67,14 +68,19 @@ const Ethereum101Page: React.FC<PageProps> = () => {
 
     setLoading(true)
 
-    contract?.methods
-      .step1_deposit()
-      .send({
-        from: account.address,
-        value: web3.utils.toWei("1", "ether"),
-        gas: 150000,
-        gasPrice: web3.utils.toWei("25", "gwei"),
-      })
+    const transaction = {
+      from: account.address,
+      to: ETHEREUM101_CONTRACT_ADDRESS,
+      value: web3.utils.toWei("1", "ether"),
+      gas: 150000,
+      gasPrice: web3.utils.toWei("25", "gwei"),
+      data: contract?.methods.step1_deposit().encodeABI(),
+    }
+
+    const signedTransaction = await signTransaction(transaction)
+
+    web3.eth
+      .sendSignedTransaction(signedTransaction?.rawTransaction ?? "")
       .on("error", error => {
         console.error(error)
         alert("Error: see console")
@@ -205,6 +211,10 @@ const Ethereum101Page: React.FC<PageProps> = () => {
         >
           Refresh Balance
         </ButtonSecondary>
+      </p>
+      <p>
+        Be patient, block times are usually around fifteen seconds and may be
+        longer.
       </p>
       <p>
         So far, you've sent us{" "}

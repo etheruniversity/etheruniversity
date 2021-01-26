@@ -3,6 +3,7 @@ import Modal from "ethereum-org-website/src/components/Modal"
 import Link from "ethereum-org-website/src/components/Link"
 import {
   ButtonPrimary,
+  ButtonSecondary,
   H2,
 } from "ethereum-org-website/src/components/SharedStyledComponents"
 import { capitalize } from "lodash"
@@ -15,25 +16,30 @@ interface AccountButtonProps
 
 const AccountButton: React.FC<AccountButtonProps> = props => {
   const { web3, transactionPendingObserver } = useWeb3()
-  const { account, loading, balance } = useAccount()
+  const { account, loading, balance, refetchBalance } = useAccount()
   const [accountModalIsOpen, setAccountModalIsOpen] = useState(false)
   const [isTransactionPending, setIsTransactionPending] = useState(false)
   const address = account?.address
-  useEffect(()=> {
-    transactionPendingObserver.subscribe('accountButton', (isTransactionPending) => {
-      setIsTransactionPending(isTransactionPending)
-    })
+  useEffect(() => {
+    transactionPendingObserver.subscribe(
+      "accountButton",
+      isTransactionPending => {
+        setIsTransactionPending(isTransactionPending)
+      }
+    )
     return () => {
-      transactionPendingObserver.unsubscribe('accountButton')
+      transactionPendingObserver.unsubscribe("accountButton")
     }
   })
 
   return (
     <>
       <ButtonPrimary onClick={() => setAccountModalIsOpen(true)} {...props}>
-        {loading ? "Connecting..."
-                 : (isTransactionPending ? "Transaction in Queue"
-                                         : "Connected to Blockchain")}
+        {loading
+          ? "Connecting..."
+          : isTransactionPending
+          ? "Transaction in Queue"
+          : "Connected to Blockchain"}
       </ButtonPrimary>
       {/* Just hide the entire element when not open. Overlay is causing z-index issues */}
       {accountModalIsOpen && (
@@ -66,6 +72,13 @@ const AccountButton: React.FC<AccountButtonProps> = props => {
             <ButtonLink to={`${ETHERSCAN_ENDPOINT}/address/${address}`}>
               View Details on Etherscan
             </ButtonLink>
+            <ButtonSecondary
+              onClick={refetchBalance}
+              disabled={loading}
+              style={{ marginLeft: "1rem" }}
+            >
+              Refresh Balance
+            </ButtonSecondary>
           </div>
         </Modal>
       )}
