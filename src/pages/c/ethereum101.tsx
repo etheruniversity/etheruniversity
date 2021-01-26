@@ -43,17 +43,34 @@ const Ethereum101Page: React.FC<PageProps> = () => {
   const [quizAnswers, setQuizAnswers] = useState(["", ""])
 
   async function getContractBalance() {
-    if (account) {
-      let balance = await contract?.methods.balanceOf(account.address).call()
-      setContractBalance(balance)
+    if (!account) {
+      return
     }
+
+    let balance
+    try {
+      balance = await contract?.methods.balanceOf(account.address).call()
+    } catch (err) {
+      console.error("Error in `getContractBalance`:")
+      console.error(err)
+      balance = 0
+    }
+    setContractBalance(balance)
   }
 
   async function getContractMessage() {
     if (account) {
-      let message = await contract?.methods.messageOf(account.address).call()
-      setContractMessage(message)
+      return
     }
+    let message
+    try {
+      message = await contract?.methods.messageOf(account.address).call()
+    } catch (err) {
+      console.error("Error in `getContractMessage`:")
+      console.error(err)
+      message = ""
+    }
+    setContractMessage(message)
   }
 
   useEffect(() => {
@@ -102,14 +119,19 @@ const Ethereum101Page: React.FC<PageProps> = () => {
 
     setLoading(true)
 
-    contract?.methods
-      .step2_withdraw()
-      .send({
-        from: account.address,
-        value: 0,
-        gas: 150000,
-        gasPrice: web3.utils.toWei("25", "gwei"),
-      })
+    const transaction = {
+      from: account.address,
+      to: ETHEREUM101_CONTRACT_ADDRESS,
+      value: 0,
+      gas: 150000,
+      gasPrice: web3.utils.toWei("25", "gwei"),
+      data: contract?.methods.step2_withdraw().encodeABI(),
+    }
+
+    const signedTransaction = await signTransaction(transaction)
+
+    web3.eth
+      .sendSignedTransaction(signedTransaction?.rawTransaction ?? "")
       .on("error", error => {
         console.error(error)
         alert("Error: see console")
@@ -131,14 +153,19 @@ const Ethereum101Page: React.FC<PageProps> = () => {
 
     setLoading(true)
 
-    contract?.methods
-      .step3_saveMessage(message)
-      .send({
-        from: account.address,
-        value: 0,
-        gas: 150000,
-        gasPrice: web3.utils.toWei("25", "gwei"),
-      })
+    const transaction = {
+      from: account.address,
+      to: ETHEREUM101_CONTRACT_ADDRESS,
+      value: 0,
+      gas: 150000,
+      gasPrice: web3.utils.toWei("25", "gwei"),
+      data: contract?.methods.step3_saveMessage(message).encodeABI(),
+    }
+
+    const signedTransaction = await signTransaction(transaction)
+
+    web3.eth
+      .sendSignedTransaction(signedTransaction?.rawTransaction ?? "")
       .on("error", error => {
         console.error(error)
         alert("Error: see console")
