@@ -64,7 +64,7 @@ const AccountButton: React.FC<AccountButtonProps> = props => {
           </p>
           {parseInt(balance) < 5e16 /* < 0.05 ETH */ && (
             <p>
-              Since your balance is <b>{balance === '0' ? '0 ETH' : 'less than 0.05'} ETH</b>, {balance === 0 ? 'you first need to get some ETH' : 'you\'ll probably want to get some more ETH'} <Link to={FAUCET_LINK}>here</Link>.
+              Since your balance is <b>{balance === '0' ? '0' : 'less than 0.05'} ETH</b>, {balance === 0 ? 'you first need to get some ETH' : 'you\'ll probably want to get some more ETH'} <Link to={FAUCET_LINK}>here</Link>.
             </p>
           )}
           <div>
