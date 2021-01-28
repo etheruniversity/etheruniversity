@@ -10,6 +10,7 @@ const CUSDC_ABI = require('../../ABIs/cUSDC_ABI.json');
 const CUSDC_DECIMALS = 1e8;
 const USDC_ABI = require('../../ABIs/ERC20_ABI.json');
 const USDC_DECIMALS = 1e6;
+const VIEW_CONTRACT_ABI = require('../../ABIs/Compound101_ABI.json');
 
 const BLOCKS_PER_YEAR = 4 * 60 * 24 * 365; // based on 4 blocks occurring every minute
 
@@ -40,29 +41,34 @@ const Compound101 = () => {
     if (web3loading || !web3 || accountLoading || !account) {
       return
     }
-    const cUSDCContract = new web3.eth.Contract(CUSDC_ABI, ADDRESS.CUSDC);
     const USDCContract = new web3.eth.Contract(USDC_ABI, ADDRESS.USDC);
-    const CUSDCContract = new web3.eth.Contract(CUSDC_ABI, ADDRESS.CUSDC);
+    const VIEWCONTRACT = new web3.eth.Contract(VIEW_CONTRACT_ABI, ADDRESS.COMPOUNDVIEW);
 
     USDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(a => a < 10.0).then(setShouldShowUSDCFaucet);
 
     const pollIndefinitely = () => {
-      cUSDCContract.methods.supplyRatePerBlock().call().then((ratePerBlock) => {
-        const growthPerBlock = 1.0 + parseFloat(ratePerBlock) / ETH_MANTISSA;
+      VIEWCONTRACT.methods.getViewModel(account.address).call().then(result => {
+        const growthPerBlock = 1.0 + parseFloat(result.supplyRatePerBlock) / ETH_MANTISSA;
         const usdcApy = 100 * (Math.pow(growthPerBlock, BLOCKS_PER_YEAR) - 1);
         setCurrentUSDCApy(usdcApy);
+
+        const ethBal = parseFloat(result.ethBalance) / ETH_MANTISSA;
+        setCurrentWalletETHBalance(ethBal);
+
+        const usdcBalance = parseFloat(result.tokenBalance) / USDC_DECIMALS;
+        setCurrentWalletUSDCBalance(usdcBalance);
+        setIsDepositComplete(usdcBalance < 0.01) //TODO: && cTokenBalance > 1
+
+        const allowance = parseFloat(result.currentAllowance) / USDC_DECIMALS;
+        setCurrentAllowance(allowance);
+        setIsApproveComplete(allowance > 1e8); //TODO: && a > currentWalletUSDCBalance
+
+        const cTokenBalance = parseFloat(result.cTokenBalance) / CUSDC_DECIMALS;
+        setDepositAmount(cTokenBalance);
+
+        const exchangeRate = parseFloat(result.tokenPerCtokenRate) / (ETH_MANTISSA * USDC_DECIMALS * Math.pow(CUSDC_DECIMALS, -1));
+        setUsdcPerCusdcRate(exchangeRate);
       });
-      web3.eth.getBalance(account.address).then(parseFloat).then(a => a / ETH_MANTISSA).then(setCurrentWalletETHBalance);
-      USDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(b => {
-        setCurrentWalletUSDCBalance(b);
-        setIsDepositComplete(b < 0.01) //TODO: && cTokenBalance > 1
-      });
-      USDCContract.methods.allowance(account.address, ADDRESS.CUSDC).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(a => {
-        setCurrentAllowance(a);
-        setIsApproveComplete(a > 1e8); //TODO: && a > currentWalletUSDCBalance
-      });
-      CUSDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / CUSDC_DECIMALS).then(setDepositAmount);
-      CUSDCContract.methods.exchangeRateCurrent().call().then(parseFloat).then(a => a / (ETH_MANTISSA * USDC_DECIMALS * Math.pow(CUSDC_DECIMALS, -1))).then(setUsdcPerCusdcRate);
       setTimeout(pollIndefinitely, 10000) // TODO: stop polling when useeffect ends
     }
     pollIndefinitely(); // Start polling
