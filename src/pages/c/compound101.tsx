@@ -55,10 +55,6 @@ const Compound101 = () => {
         const ethBal = parseFloat(result.ethBalance) / ETH_MANTISSA;
         setCurrentWalletETHBalance(ethBal);
 
-        const usdcBalance = parseFloat(result.tokenBalance) / USDC_DECIMALS;
-        setCurrentWalletUSDCBalance(usdcBalance);
-        setIsDepositComplete(usdcBalance < 0.01) //TODO: && cTokenBalance > 1
-
         const allowance = parseFloat(result.currentAllowance) / USDC_DECIMALS;
         setCurrentAllowance(allowance);
         setIsApproveComplete(allowance > 1e8); //TODO: && a > currentWalletUSDCBalance
@@ -68,6 +64,10 @@ const Compound101 = () => {
 
         const exchangeRate = parseFloat(result.tokenPerCtokenRate) / (ETH_MANTISSA * USDC_DECIMALS * Math.pow(CUSDC_DECIMALS, -1));
         setUsdcPerCusdcRate(exchangeRate);
+
+        const usdcBalance = parseFloat(result.tokenBalance) / USDC_DECIMALS;
+        setCurrentWalletUSDCBalance(usdcBalance);
+        setIsDepositComplete(usdcBalance < 0.01 && exchangeRate * cTokenBalance > 1.0)
       });
       setTimeout(pollIndefinitely, 10000) // TODO: stop polling when useeffect ends
     }
