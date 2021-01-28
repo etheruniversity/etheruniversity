@@ -31,7 +31,7 @@ const Compound101 = () => {
   const { web3, loading: web3loading, transactionPendingObserver } = useWeb3();
   const txPending = (is) => {
     setIsTransactionPending(is);
-    transactionPendingObserver.publish(is);
+    transactionPendingObserver.publish(is); //TODO: Unsubscribe when useEffect is done.
   }
 
   const { account, loading: accountLoading } = useAccount();
@@ -59,11 +59,11 @@ const Compound101 = () => {
       });
       USDCContract.methods.allowance(account.address, ADDRESS.CUSDC).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(a => {
         setCurrentAllowance(a);
-        setIsApproveComplete(a > 1e8);
+        setIsApproveComplete(a > 1e8); //TODO: && a > currentWalletUSDCBalance
       });
       CUSDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / CUSDC_DECIMALS).then(setDepositAmount);
       CUSDCContract.methods.exchangeRateCurrent().call().then(parseFloat).then(a => a / (ETH_MANTISSA * USDC_DECIMALS * Math.pow(CUSDC_DECIMALS, -1))).then(setUsdcPerCusdcRate);
-      setTimeout(pollIndefinitely, 10000)
+      setTimeout(pollIndefinitely, 10000) // TODO: stop polling when useeffect ends
     }
     pollIndefinitely(); // Start polling
   }, [web3loading, web3, accountLoading, account]);
