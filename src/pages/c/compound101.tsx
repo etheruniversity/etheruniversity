@@ -65,7 +65,7 @@ const Compound101 = () => {
     if (TESTNET_NAME === "mainnet") {
       usdcFaucet = <p>You need to aquire some USDC. You can ask a friend or use Uniswap. You can also switch to testnet where we can give you free USDC.</p>
     } else {
-      usdcFaucet = <><p>You need to request some USDC from our testnet faucet.</p><div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{printUsdc(account, web3, txPending)}} disabled={isTransactionPending}>Print Money Like the Fed</EthEducationButton></div></>
+      usdcFaucet = <><p>You need to request some USDC from our testnet faucet.</p><div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{printUsdc(account, web3, txPending)}} disabled={isTransactionPending}>Request Testnet USDC</EthEducationButton></div></>
     }
   }
   return (
