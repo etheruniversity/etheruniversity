@@ -16,7 +16,13 @@
 		"type": "constructor"
 	},
 	{
-		"inputs": [],
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			}
+		],
 		"name": "getViewModel",
 		"outputs": [
 			{

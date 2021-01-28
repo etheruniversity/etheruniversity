@@ -3,7 +3,7 @@ pragma solidity >=0.8.0 <0.9.0;
 
 interface CToken {
     function supplyRatePerBlock() external view returns (uint);
-    function exchangeRateStored() external view returns (uint);
+    function exchangeRateCurrent() external returns (uint);
 }
 
 interface ERC20Token {
@@ -21,13 +21,13 @@ contract Compound101 {
         token = _token;
     }
 
-    function getViewModel() external view returns (uint ethBalance, uint supplyRatePerBlock, uint tokenPerCtokenRate, uint cTokenBalance, uint tokenBalance, uint currentAllowance) {
-        ethBalance = msg.sender.balance;
+    function getViewModel(address user) external returns (uint ethBalance, uint supplyRatePerBlock, uint tokenPerCtokenRate, uint cTokenBalance, uint tokenBalance, uint currentAllowance) {
+        ethBalance = user.balance;
         supplyRatePerBlock = CToken(cToken).supplyRatePerBlock();
-        tokenPerCtokenRate = CToken(cToken).exchangeRateStored();
-        cTokenBalance = ERC20Token(cToken).balanceOf(msg.sender);
-        tokenBalance = ERC20Token(token).balanceOf(msg.sender);
-        currentAllowance = ERC20Token(token).allowance(msg.sender, cToken);
+        tokenPerCtokenRate = CToken(cToken).exchangeRateCurrent();
+        cTokenBalance = ERC20Token(cToken).balanceOf(user);
+        tokenBalance = ERC20Token(token).balanceOf(user);
+        currentAllowance = ERC20Token(token).allowance(user, cToken);
     }
 
     /**
