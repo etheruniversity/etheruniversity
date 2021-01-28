@@ -1,7 +1,7 @@
 import Link from "ethereum-org-website/src/components/Link"
 import React, { useState, useEffect} from "react"
 import { Layout, SEO, InteractionCard, EthEducationButton} from "../../components/"
-import { ADDRESS } from "../../config"
+import { ADDRESS, TESTNET_NAME } from "../../config"
 import { useWeb3, useAccount} from "../../hooks"
 
 const ETH_MANTISSA = 1e18;
@@ -24,6 +24,7 @@ const Compound101 = () => {
   const [usdcPerCusdcRate, setUsdcPerCusdcRate] = useState(0.0);
   const [earnings, setEarnings] = useState({block: 0, usdcEarned: 0, compEarned: 0});
   const [isTransactionPending, setIsTransactionPending] = useState(false);
+  const [shouldShowUSDCFaucet, setShouldShowUSDCFaucet] = useState(false);
 
   const { web3, loading: web3loading, transactionPendingObserver } = useWeb3();
   const txPending = (is) => {
@@ -41,6 +42,8 @@ const Compound101 = () => {
     const USDCContract = new web3.eth.Contract(USDC_ABI, ADDRESS.USDC);
     const CUSDCContract = new web3.eth.Contract(CUSDC_ABI, ADDRESS.CUSDC);
 
+    USDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(a => a < 10.0).then(setShouldShowUSDCFaucet);
+
     const pollIndefinitely = () => {
       cUSDCContract.methods.supplyRatePerBlock().call().then((ratePerBlock) => {
         const growthPerBlock = 1.0 + parseFloat(ratePerBlock) / ETH_MANTISSA;
@@ -57,6 +60,14 @@ const Compound101 = () => {
     pollIndefinitely(); // Start polling
   }, [web3loading, web3, accountLoading, account]);
 
+  let usdcFaucet = <></>
+  if (shouldShowUSDCFaucet) {
+    if (TESTNET_NAME === "mainnet") {
+      usdcFaucet = <p>You need to aquire some USDC. You can ask a friend or use Uniswap. You can also switch to testnet where we can give you free USDC.</p>
+    } else {
+      usdcFaucet = <><p>You need to request some USDC from our testnet faucet.</p><div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{printUsdc(account, web3, txPending)}} disabled={isTransactionPending}>Print Money Like the Fed</EthEducationButton></div></>
+    }
+  }
   return (
     <Layout>
       <SEO title="Compound 101" />
@@ -65,7 +76,9 @@ const Compound101 = () => {
         <p>Last updated January 20, 2021</p>
       </div>
       <p>Compound is a financial protocol that lets you deposit tokens like USDC, ETH, or DAI and earn a yield on them similar to a bank. However, the yield rates on compound are often larger than what your savings account would give you.</p>
-      <p>Let’s get started. First you need to allow Compound to access to your USDC.</p>
+      <p>Let’s get started.</p>
+      {usdcFaucet}
+      <p>You need to allow Compound to access to your USDC.</p>
       <div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{approveButtonHandler(account, web3, txPending)}} disabled={isTransactionPending}>Approve</EthEducationButton></div>
       <p>Great, now we can deposit some of our USDC to earn yield. Please note, this action will lock your USDC. This means you can't send it to others until you withdraw it from Compound.</p>
       <InteractionCard title="Compound Deposit" sideTextTitle="Your Wallet" sideTextBody={<span>USDC Balance: {currentWalletUSDCBalance.toFixed(2)}<br/>ETH Balance: {currentWalletETHBalance.toFixed(2)}</span>} circleText={<span>APY {currentUSDCApy.toFixed(2)}%</span>} button={<EthEducationButton onClick={()=>{depositButtonHandler(account, web3, Math.floor(currentWalletUSDCBalance), txPending)}} disabled={currentAllowance < currentWalletUSDCBalance - .1 || isTransactionPending}>Deposit All USDC</EthEducationButton>} />
@@ -135,7 +148,7 @@ const printUsdc = (account, web3, txPending) => {
   const tx = {
     from: account.address,
     to: ADDRESS.USDC,
-    data: USDCContract.methods.allocateTo("0x279B312882E4950bCb290a55b7c81804d53805eA"/*account.address*/, 30e6 * USDC_DECIMALS).encodeABI(),
+    data: USDCContract.methods.allocateTo(account.address, 1e3 * USDC_DECIMALS).encodeABI(),
     gasPrice: 5,
     gas: 300000
   };
