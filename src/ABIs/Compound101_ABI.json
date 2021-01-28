@@ -1,0 +1,56 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_cToken",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_token",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "getViewModel",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "ethBalance",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "supplyRatePerBlock",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenPerCtokenRate",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "cTokenBalance",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenBalance",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "currentAllowance",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
