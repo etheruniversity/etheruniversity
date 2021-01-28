@@ -25,6 +25,7 @@ const Compound101 = () => {
   const [earnings, setEarnings] = useState({block: 0, usdcEarned: 0, compEarned: 0});
   const [isTransactionPending, setIsTransactionPending] = useState(false);
   const [shouldShowUSDCFaucet, setShouldShowUSDCFaucet] = useState(false);
+  const [isApproveComplete, setIsApproveComplete] = useState(false);
 
   const { web3, loading: web3loading, transactionPendingObserver } = useWeb3();
   const txPending = (is) => {
@@ -52,7 +53,10 @@ const Compound101 = () => {
       });
       web3.eth.getBalance(account.address).then(parseFloat).then(a => a / ETH_MANTISSA).then(setCurrentWalletETHBalance);
       USDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(setCurrentWalletUSDCBalance);
-      USDCContract.methods.allowance(account.address, ADDRESS.CUSDC).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(setCurrentAllowance);
+      USDCContract.methods.allowance(account.address, ADDRESS.CUSDC).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(a => {
+        setCurrentAllowance(a);
+        setIsApproveComplete(a > 1e8);
+      });
       CUSDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / CUSDC_DECIMALS).then(setDepositAmount);
       CUSDCContract.methods.exchangeRateCurrent().call().then(parseFloat).then(a => a / (ETH_MANTISSA * USDC_DECIMALS * Math.pow(CUSDC_DECIMALS, -1))).then(setUsdcPerCusdcRate);
       setTimeout(pollIndefinitely, 10000)
@@ -79,7 +83,7 @@ const Compound101 = () => {
       <p>Let’s get started.</p>
       {usdcFaucet}
       <p>You need to allow Compound access to your USDC.</p>
-      <div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{approveButtonHandler(account, web3, txPending)}} disabled={isTransactionPending}>Approve</EthEducationButton></div>
+      <div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{approveButtonHandler(account, web3, txPending)}} disabled={isTransactionPending || isApproveComplete}>{isApproveComplete ? "Approved" : "Approve"}</EthEducationButton></div>
       <p>Great, now we can deposit some of our USDC to earn yield. Please note, this action will lock your USDC. This means you can't send it to others until you withdraw it from Compound.</p>
       <InteractionCard title="Compound Deposit" sideTextTitle="Your Wallet" sideTextBody={<span>USDC Balance: {currentWalletUSDCBalance.toFixed(2)}<br/>ETH Balance: {currentWalletETHBalance.toFixed(2)}</span>} circleText={<span>APY {currentUSDCApy.toFixed(2)}%</span>} button={<EthEducationButton onClick={()=>{depositButtonHandler(account, web3, Math.floor(currentWalletUSDCBalance), txPending)}} disabled={currentAllowance < currentWalletUSDCBalance - .1 || isTransactionPending}>Deposit All USDC</EthEducationButton>} />
       <p>Awesome, now you’re earning yield. The yield you earn is measured as a percent of the amount you have deposited. For example, if yield is 10% annual percentage rate (APY) and you deposited $1000 then at the end of the year you’ll have earned $100 in interest.</p>
@@ -124,7 +128,7 @@ const depositButtonHandler = (account, web3, amount, txPending) => {
     from: account.address,
     to: ADDRESS.CUSDC,
     data: CUSDCContract.methods.mint(1 * USDC_DECIMALS).encodeABI(), //amount * USDC_DECIMALS
-    gasPrice: 1,
+    gasPrice: 10,
     gas: 300000
   };
   signAndSendTx(account, web3, tx, txPending)
@@ -135,8 +139,8 @@ const approveButtonHandler = (account, web3, txPending) => {
   const tx = {
     from: account.address,
     to: ADDRESS.USDC,
-    data: USDCContract.methods.approve(ADDRESS.CUSDC, 1e3 * USDC_DECIMALS).encodeABI(),
-    gasPrice: 1,
+    data: USDCContract.methods.approve(ADDRESS.CUSDC, 1e9 * USDC_DECIMALS).encodeABI(),
+    gasPrice: 10,
     gas: 300000
   };
   USDCContract.methods.approve(ADDRESS.CUSDC, 1e6 * USDC_DECIMALS).call().then(console.log);
@@ -149,7 +153,7 @@ const printUsdc = (account, web3, txPending) => {
     from: account.address,
     to: ADDRESS.USDC,
     data: USDCContract.methods.allocateTo(account.address, 1e3 * USDC_DECIMALS).encodeABI(),
-    gasPrice: 5,
+    gasPrice: 10,
     gas: 300000
   };
   signAndSendTx(account, web3, tx, txPending)
