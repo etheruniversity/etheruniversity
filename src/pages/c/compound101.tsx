@@ -26,6 +26,7 @@ const Compound101 = () => {
   const [isTransactionPending, setIsTransactionPending] = useState(false);
   const [shouldShowUSDCFaucet, setShouldShowUSDCFaucet] = useState(false);
   const [isApproveComplete, setIsApproveComplete] = useState(false);
+  const [isDepositComplete, setIsDepositComplete] = useState(false);
 
   const { web3, loading: web3loading, transactionPendingObserver } = useWeb3();
   const txPending = (is) => {
@@ -52,7 +53,10 @@ const Compound101 = () => {
         setCurrentUSDCApy(usdcApy);
       });
       web3.eth.getBalance(account.address).then(parseFloat).then(a => a / ETH_MANTISSA).then(setCurrentWalletETHBalance);
-      USDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(setCurrentWalletUSDCBalance);
+      USDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(b => {
+        setCurrentWalletUSDCBalance(b);
+        setIsDepositComplete(b < 0.01) //TODO: && cTokenBalance > 1
+      });
       USDCContract.methods.allowance(account.address, ADDRESS.CUSDC).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(a => {
         setCurrentAllowance(a);
         setIsApproveComplete(a > 1e8);
@@ -85,7 +89,7 @@ const Compound101 = () => {
       <p>You need to allow Compound access to your USDC.</p>
       <div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{approveButtonHandler(account, web3, txPending)}} disabled={isTransactionPending || isApproveComplete}>{isApproveComplete ? "Approved" : "Approve"}</EthEducationButton></div>
       <p>Great, now we can deposit some of our USDC to earn yield. Please note, this action will lock your USDC. This means you can't send it to others until you withdraw it from Compound.</p>
-      <InteractionCard title="Compound Deposit" sideTextTitle="Your Wallet" sideTextBody={<span>USDC Balance: {currentWalletUSDCBalance.toFixed(2)}<br/>ETH Balance: {currentWalletETHBalance.toFixed(2)}</span>} circleText={<span>APY {currentUSDCApy.toFixed(2)}%</span>} button={<EthEducationButton onClick={()=>{depositButtonHandler(account, web3, Math.floor(currentWalletUSDCBalance), txPending)}} disabled={currentAllowance < currentWalletUSDCBalance - .1 || isTransactionPending}>Deposit All USDC</EthEducationButton>} />
+      <InteractionCard title="Compound Deposit" sideTextTitle="Your Wallet" sideTextBody={<span>USDC Balance: {currentWalletUSDCBalance.toFixed(2)}<br/>ETH Balance: {currentWalletETHBalance.toFixed(2)}</span>} circleText={<span>APY {currentUSDCApy.toFixed(2)}%</span>} button={<EthEducationButton onClick={()=>{depositButtonHandler(account, web3, Math.floor(currentWalletUSDCBalance), txPending)}} disabled={currentAllowance < currentWalletUSDCBalance - .1 || isTransactionPending || isDepositComplete}>{isDepositComplete ? "Deposited" : "Deposit All USDC"}</EthEducationButton>} />
       <p>Awesome, now you’re earning yield. The yield you earn is measured as a percent of the amount you have deposited. For example, if yield is 10% annual percentage rate (APY) and you deposited $1000 then at the end of the year you’ll have earned $100 in interest.</p>
       <p>This yield accrues every 13 seconds with a new Ethereum block. This means you can watch your earnings grow in real time and withdraw them whenever you’d like.</p>
       <p>In the {earnings.block - depositBlock} blocks since you deposited, your balance has grown {earnings.usdcEarned} USDC, from {depositAmount * usdcPerCusdcRate} USDC to {depositAmount+earnings.usdcEarned} USDC. Most of your interest was paid in USDC, but you’ve also earned some {earnings.compEarned} COMP, the governance token. You can learn more about COMP token in <Link to="/c">this quest (coming soon)</Link> or exchange it for USDC by following the <Link to="/c">Uniswap quest (coming soon)</Link>.</p>
@@ -127,7 +131,7 @@ const depositButtonHandler = (account, web3, amount, txPending) => {
   const tx = {
     from: account.address,
     to: ADDRESS.CUSDC,
-    data: CUSDCContract.methods.mint(1 * USDC_DECIMALS).encodeABI(), //amount * USDC_DECIMALS
+    data: CUSDCContract.methods.mint(amount * USDC_DECIMALS).encodeABI(),
     gasPrice: 10,
     gas: 300000
   };
