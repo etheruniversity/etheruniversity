@@ -65,9 +65,7 @@ const Layout: React.FC = ({ children }) => {
                 </Link>
               </H3>
               <p style={{ margin: 0 }}>
-                © {new Date().getFullYear()}, Built with
-                {` `}
-                <a href="https://www.gatsbyjs.com">Gatsby</a>
+                © {new Date().getFullYear()}
               </p>
             </footer>
           </div>
