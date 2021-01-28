@@ -23,17 +23,7 @@ const Layout: React.FC = ({ children }) => {
     messages: undefined,
   }
 
-  const data = useStaticQuery(graphql`
-    query SiteTitleQuery {
-      site {
-        siteMetadata {
-          title
-        }
-      }
-    }
-  `)
-
-  const siteTitle = data.site.siteMetadata?.title || `Title`
+  const siteTitle = 'Ether University'
 
   return (
     // Providers are required for ethereum.org components to work correctly.
