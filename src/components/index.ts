@@ -1,5 +1,6 @@
 import { AccountButton } from "./AccountButton"
 import { Header } from "./Header"
+import { Input } from "./Input"
 import { InteractionCard } from "./InteractionCard"
 import { Logo } from "./Logo"
 import { Layout } from "./Layout"
@@ -11,6 +12,7 @@ import { EthEducationButton } from "./EthEducationButton"
 export {
   AccountButton,
   Header,
+  Input,
   InteractionCard,
   Logo,
   Layout,

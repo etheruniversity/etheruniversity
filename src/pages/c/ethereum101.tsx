@@ -9,7 +9,7 @@ import {
 import { PageProps } from "gatsby"
 import { capitalize } from "lodash"
 import React, { useEffect, useState } from "react"
-import { Layout, SEO } from "../../components"
+import { Input, Layout, SEO } from "../../components"
 import {
   ETHEREUM101_CONTRACT_ADDRESS,
   ETHERSCAN_ENDPOINT,
@@ -40,6 +40,9 @@ const Ethereum101Page: React.FC<PageProps> = () => {
 
   const [message, setMessage] = useState("")
   const [contractMessage, setContractMessage] = useState(0)
+  const [saveMessageTransactionHash, setSaveMessageTransactionHash] = useState(
+    ""
+  )
   const [quizAnswers, setQuizAnswers] = useState(["", ""])
 
   async function getContractBalance() {
@@ -59,9 +62,10 @@ const Ethereum101Page: React.FC<PageProps> = () => {
   }
 
   async function getContractMessage() {
-    if (account) {
+    if (!account) {
       return
     }
+
     let message
     try {
       message = await contract?.methods.messageOf(account.address).call()
@@ -124,7 +128,7 @@ const Ethereum101Page: React.FC<PageProps> = () => {
       to: ETHEREUM101_CONTRACT_ADDRESS,
       value: 0,
       gas: 150000,
-      gasPrice: web3.utils.toWei("25", "gwei"),
+      gasPrice: web3.utils.toWei("50", "gwei"),
       data: contract?.methods.step2_withdraw().encodeABI(),
     }
 
@@ -140,8 +144,8 @@ const Ethereum101Page: React.FC<PageProps> = () => {
       .on("confirmation", (confirmationNumber: number) => {
         if (confirmationNumber === 1) {
           refetchBalance()
-          setLoading(false)
           getContractBalance()
+          setLoading(false)
         }
       })
   }
@@ -158,7 +162,7 @@ const Ethereum101Page: React.FC<PageProps> = () => {
       to: ETHEREUM101_CONTRACT_ADDRESS,
       value: 0,
       gas: 150000,
-      gasPrice: web3.utils.toWei("25", "gwei"),
+      gasPrice: web3.utils.toWei("50", "gwei"),
       data: contract?.methods.step3_saveMessage(message).encodeABI(),
     }
 
@@ -171,11 +175,12 @@ const Ethereum101Page: React.FC<PageProps> = () => {
         alert("Error: see console")
         setLoading(false)
       })
-      .on("confirmation", (confirmationNumber: number) => {
+      .on("confirmation", (confirmationNumber, { transactionHash }) => {
         if (confirmationNumber === 1) {
+          setSaveMessageTransactionHash(transactionHash)
           refetchBalance()
-          setLoading(false)
           getContractMessage()
+          setLoading(false)
         }
       })
   }
@@ -221,7 +226,7 @@ const Ethereum101Page: React.FC<PageProps> = () => {
         <b>{capitalize(TESTNET_NAME)}</b> testnet. Now, try sending us some ETH
         (technically, you're sending ETH to a{" "}
         <Link
-          to={`${ETHERSCAN_ENDPOINT}/address/${ETHEREUM101_CONTRACT_ADDRESS}`}
+          to={`${ETHERSCAN_ENDPOINT}/address/${ETHEREUM101_CONTRACT_ADDRESS}#code`}
         >
           smart contract
         </Link>{" "}
@@ -266,7 +271,7 @@ const Ethereum101Page: React.FC<PageProps> = () => {
         to be saved on the blockchain forever. Note that each character you
         store will cost extra ETH.
       </p>
-      <input
+      <Input
         value={message}
         onChange={e => setMessage(e.target.value)}
         placeholder="Enter Data to Store on Blockchain"
@@ -279,7 +284,13 @@ const Ethereum101Page: React.FC<PageProps> = () => {
       <p>
         You saved "<b>{contractMessage}</b>" on the blockchain.
       </p>
-      <p>Here is what your transaction looks like on the blockchain:</p>
+      {saveMessageTransactionHash && (
+        <ButtonLink
+          to={`${ETHERSCAN_ENDPOINT}/tx/${saveMessageTransactionHash}`}
+        >
+          View Transaction
+        </ButtonLink>
+      )}
       <H2>Quick Quiz</H2>
       <p>
         This quiz is all on the blockchain. If you answer all the questions
