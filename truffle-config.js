@@ -28,7 +28,7 @@ module.exports = {
           providerOrUrl: `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
         }),
       network_id: 5,
-      gas: 3000000,
+      gas: 8000000,
       gasPrice: 10000000000,
     },
   },
