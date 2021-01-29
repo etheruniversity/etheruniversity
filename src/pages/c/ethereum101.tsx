@@ -218,10 +218,17 @@ const Ethereum101Page: React.FC<PageProps> = () => {
         }
       })
 
-    const allCorrect = await contract?.methods
-      .step4_submitQuizAnswers(quizAnswers)
-      .call()
-    setLoading(false)
+    let allCorrect
+    try {
+      allCorrect = await contract?.methods
+        .step4_submitQuizAnswers(quizAnswers)
+        .call()
+    } catch (error) {
+      console.error(error)
+      alert("Error: see console")
+    } finally {
+      setLoading(false)
+    }
     alert(allCorrect ? "Correct!" : "Try again, at least one answer was wrong.")
   }
 
