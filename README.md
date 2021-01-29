@@ -21,7 +21,9 @@ Deployed live to [etheducation.vercel.app](https://etheducation.vercel.app/). Ba
 1. Run `yarn truffle migrate --network development` to deploy smart contracts on personal blockchain
    > When updating in development, run `yarn truffle migrate --network development --reset` to replace existing contracts. Make sure to replace the old contract address with the new one in `.env.development`.
 
-To deploy to a real testnet, run something like `yarn truffle migrate --network goerli`.
+To deploy to a real testnet, run something like `yarn truffle migrate --network goerli [--reset]` (adding `--reset` runs migrations from the start and replaces existing contracts).
+
+To upload verified contract code to [Etherscan](https://etherscan.io), run something like `yarn truffle run verify Achievement Ethereum101 Compound101 --network goerli`.
 
 ## Repository Structure
 
@@ -56,6 +58,7 @@ Alternatively, set the `GATSBY_PRIVATE_NODE` variable instead of `GATSBY_INFURA_
 
 - `INFURA_PROJECT_ID`: the Infura project id to access testnets to deploy contracts to
 - `PRIVATE_KEY`: private key of the address to deploy contracts from. Make sure it has some testnet ETH
+- `ETHERSCAN_API_KEY`: used to upload verified source code to [etherscan.io](https://etherscan.io)
 
 ### Example
 
@@ -69,6 +72,7 @@ GATSBY_ETHEREUM101_CONTRACT_ADDRESS="0xOTHERCONTRACTADDRESS"
 
 INFURA_PROJECT_ID="somenumbersandletters"
 PRIVATE_KEY="longstringofnumbersandletters"
+ETHERSCAN_API_KEY="morenumbersandletters"
 ```
 
 ## Stack
