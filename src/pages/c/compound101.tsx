@@ -100,7 +100,7 @@ const Compound101 = () => {
     if (TESTNET_NAME === "mainnet") {
       usdcFaucet = <p>You need to aquire some USDC. You can ask a friend or use Uniswap. You can also switch to testnet where we can give you free USDC.</p>
     } else {
-      usdcFaucet = <><p>You need to request some USDC from our testnet faucet.</p><div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{if (currentWalletETHBalance < GAS_PRICE * 300e3) {setIsAccountModalOpen(true)} else {printUsdc(account, web3, txPending)}}} disabled={isTransactionPending}>Request Testnet USDC</EthEducationButton></div></>
+      usdcFaucet = <><p>You need to request some USDC from our testnet faucet.</p><div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{if (currentWalletETHBalance * ETH_MANTISSA < GAS_PRICE * 300e3) {setIsAccountModalOpen(true)} else {printUsdc(account, web3, txPending)}}} disabled={isTransactionPending}>Request Testnet USDC</EthEducationButton></div></>
     }
   }
   return (
@@ -114,13 +114,13 @@ const Compound101 = () => {
       <p>Let’s get started.</p>
       {usdcFaucet}
       <p>You need to allow Compound access to your USDC.</p>
-      <div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{if (currentWalletETHBalance < GAS_PRICE * 300e3) {setIsAccountModalOpen(true)} else {approveButtonHandler(account, web3, txPending)}}} disabled={isTransactionPending || isApproveComplete}>{isApproveComplete ? "Approved" : "Approve"}</EthEducationButton></div>
+      <div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{if (currentWalletETHBalance * ETH_MANTISSA < GAS_PRICE * 300e3) {setIsAccountModalOpen(true)} else {approveButtonHandler(account, web3, txPending)}}} disabled={isTransactionPending || isApproveComplete}>{isApproveComplete ? "Approved" : "Approve"}</EthEducationButton></div>
       <p>Great, now we can deposit some of our USDC to earn yield. Please note, this action will lock your USDC. This means you can't send it to others until you withdraw it from Compound.</p>
-      <InteractionCard title="Compound Deposit" sideTextTitle="Your Wallet" sideTextBody={<span>USDC Balance: {currentWalletUSDCBalance.toFixed(2)}<br/>ETH Balance: {currentWalletETHBalance.toFixed(2)}</span>} circleText={<span>APY {currentUSDCApy.toFixed(2)}%</span>} button={<EthEducationButton onClick={()=>{if (currentWalletETHBalance < GAS_PRICE * 300e3) {setIsAccountModalOpen(true)} else {depositButtonHandler(account, web3, Math.floor(currentWalletUSDCBalance), txPending)}}} disabled={currentAllowance < currentWalletUSDCBalance - .1 || isTransactionPending || isDepositComplete}>{isDepositComplete ? "Deposited" : "Deposit All USDC"}</EthEducationButton>} />
+      <InteractionCard title="Compound Deposit" sideTextTitle="Your Wallet" sideTextBody={<span>USDC Balance: {currentWalletUSDCBalance.toFixed(2)}<br/>ETH Balance: {currentWalletETHBalance.toFixed(2)}</span>} circleText={<span>APY {currentUSDCApy.toFixed(2)}%</span>} button={<EthEducationButton onClick={()=>{if (currentWalletETHBalance * ETH_MANTISSA < GAS_PRICE * 300e3) {setIsAccountModalOpen(true)} else {depositButtonHandler(account, web3, Math.floor(currentWalletUSDCBalance), txPending)}}} disabled={currentAllowance < currentWalletUSDCBalance - .1 || isTransactionPending || isDepositComplete}>{isDepositComplete ? "Deposited" : "Deposit All USDC"}</EthEducationButton>} />
       <p>Awesome, now you’re earning yield. The yield you earn is measured as a percent of the amount you have deposited. For example, if yield is 10% annual percentage rate (APY) and you deposited $1000 then at the end of the year you’ll have earned $100 in interest.</p>
       <p>This yield accrues every 13 seconds with a new Ethereum block. This means you can watch your earnings grow in real time and withdraw them whenever you’d like.</p>
       <p>In the {earnings.block - depositBlock} blocks since you deposited, your balance has grown {earnings.usdcEarned} USDC, from {depositAmount * usdcPerCusdcRate} USDC to {depositAmount+earnings.usdcEarned} USDC. Most of your interest was paid in USDC, but you’ve also earned some {earnings.compEarned} COMP, the governance token. You can learn more about COMP token in <Link to="/c">this quest (coming soon)</Link> or exchange it for USDC by following the <Link to="/c">Uniswap quest (coming soon)</Link>.</p>
-      <InteractionCard title="Compound Deposit" sideTextTitle="Time Since Deposit" sideTextBody={<span>{earnings.block - depositBlock} blocks</span>} circleText={<span>BALANCE <span style={{fontSize: 16}}>${/*(depositAmount+earnings.usdcEarned)*/(depositAmount * usdcPerCusdcRate).toString()}</span></span>} button={<EthEducationButton disabled={isTransactionPending}>Withdraw All USDC</EthEducationButton>} />
+      <InteractionCard title="Compound Deposit" sideTextTitle="Time Since Deposit" sideTextBody={<span>{earnings.block - depositBlock} blocks</span>} circleText={<span>BALANCE <span style={{fontSize: 16}}>${/*(depositAmount+earnings.usdcEarned)*/(depositAmount * usdcPerCusdcRate).toString()}</span></span>} button={<EthEducationButton onClick={()=>{if (currentWalletETHBalance * ETH_MANTISSA < GAS_PRICE * 300e3) {console.log(currentWalletETHBalance);setIsAccountModalOpen(true)} else {withdrawButtonHandler(account, web3, Math.floor(depositAmount * usdcPerCusdcRate), txPending)}}} disabled={isTransactionPending}>Withdraw All USDC</EthEducationButton>} />
       <p>To understand where this yield is coming from it helps to go back to that analogy of the bank. When you deposit money in your bank, they lend it out to others who pay the bank interest. This may be in the form of a mortgage or a credit card loan. The banks split their profit with you. In this scenario, they have a lot of control.</p>
       <p>The analogy works well with the Compound Protocol as a replacement for the bank. Just like your bank, Compound is lending out the money. Your money, along with the money others deposit, goes into a large pool. Borrowers can borrow money from this pool provided they have proof they'll pay back their debt. Instead of the bank setting interest rates for borrowers and depositors, the interest rate is set by supply and demand.</p>
       <Link href="https://medium.com/compound-finance/faq-1a2636713b69">Dive deep into how Compound works</Link>
@@ -170,6 +170,19 @@ const signAndSendTx = async (account, web3, tx, txPending) => {
     }
   });
   txPending(false);
+}
+
+const withdrawButtonHandler = (account, web3, amount, txPending) => {
+  const CUSDCContract = new web3.eth.Contract(CUSDC_ABI, ADDRESS.CUSDC);
+  CUSDCContract.methods.redeemUnderlying(amount * USDC_DECIMALS).call().then(console.log);
+  const tx = {
+    from: account.address,
+    to: ADDRESS.CUSDC,
+    data: CUSDCContract.methods.redeemUnderlying(amount * USDC_DECIMALS).encodeABI(),
+    gasPrice: GAS_PRICE,
+    gas: 300000
+  };
+  signAndSendTx(account, web3, tx, txPending)
 }
 
 const depositButtonHandler = (account, web3, amount, txPending) => {
