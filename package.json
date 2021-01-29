@@ -5,6 +5,7 @@
   "version": "0.1.0",
   "author": "Nathan H. Leung <n@n8c.co>, Evan Mays <me@evanmays.com>",
   "dependencies": {
+    "@openzeppelin/contracts": "^3.3.0",
     "electron": "^11.2.0",
     "ethereum-org-website": "git+https://github.com/ethereum/ethereum-org-website.git",
     "gatsby": "^2.26.1",
