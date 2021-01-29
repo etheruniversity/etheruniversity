@@ -1,7 +1,7 @@
 import Link from "ethereum-org-website/src/components/Link"
 import React, { useState, useEffect} from "react"
 import { Layout, SEO, InteractionCard, EthEducationButton} from "../../components/"
-import { ADDRESS, TESTNET_NAME, FAUCET_LINK } from "../../config"
+import { ADDRESS, TESTNET_NAME, FAUCET_LINK, GAS_PRICE } from "../../config"
 import Modal from "ethereum-org-website/src/components/Modal"
 import { H2 } from "ethereum-org-website/src/components/SharedStyledComponents"
 import { useWeb3, useAccount} from "../../hooks"
@@ -179,7 +179,7 @@ const depositButtonHandler = (account, web3, amount, txPending) => {
     from: account.address,
     to: ADDRESS.CUSDC,
     data: CUSDCContract.methods.mint(amount * USDC_DECIMALS).encodeABI(),
-    gasPrice: 10,
+    gasPrice: GAS_PRICE,
     gas: 300000
   };
   signAndSendTx(account, web3, tx, txPending)
@@ -191,7 +191,7 @@ const approveButtonHandler = (account, web3, txPending) => {
     from: account.address,
     to: ADDRESS.USDC,
     data: USDCContract.methods.approve(ADDRESS.CUSDC, 1e9 * USDC_DECIMALS).encodeABI(),
-    gasPrice: 10,
+    gasPrice: GAS_PRICE,
     gas: 300000
   };
   USDCContract.methods.approve(ADDRESS.CUSDC, 1e6 * USDC_DECIMALS).call().then(console.log);
@@ -204,7 +204,7 @@ const printUsdc = (account, web3, txPending) => {
     from: account.address,
     to: ADDRESS.USDC,
     data: USDCContract.methods.allocateTo(account.address, 1e3 * USDC_DECIMALS).encodeABI(),
-    gasPrice: 10,
+    gasPrice: GAS_PRICE,
     gas: 300000
   };
   signAndSendTx(account, web3, tx, txPending)

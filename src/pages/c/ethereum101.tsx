@@ -15,6 +15,7 @@ import {
   ETHERSCAN_ENDPOINT,
   FAUCET_LINK,
   TESTNET_NAME,
+  GAS_PRICE,
 } from "../../config"
 import { useAccount, useContract, useWeb3 } from "../../hooks"
 
@@ -94,7 +95,7 @@ const Ethereum101Page: React.FC<PageProps> = () => {
       to: ETHEREUM101_CONTRACT_ADDRESS,
       value: web3.utils.toWei("1", "ether"),
       gas: 150000,
-      gasPrice: web3.utils.toWei("25", "gwei"),
+      gasPrice: GAS_PRICE,
       data: contract?.methods.step1_deposit().encodeABI(),
     }
 
@@ -128,7 +129,7 @@ const Ethereum101Page: React.FC<PageProps> = () => {
       to: ETHEREUM101_CONTRACT_ADDRESS,
       value: 0,
       gas: 150000,
-      gasPrice: web3.utils.toWei("50", "gwei"),
+      gasPrice: GAS_PRICE,
       data: contract?.methods.step2_withdraw().encodeABI(),
     }
 
@@ -162,7 +163,7 @@ const Ethereum101Page: React.FC<PageProps> = () => {
       to: ETHEREUM101_CONTRACT_ADDRESS,
       value: 0,
       gas: 150000,
-      gasPrice: web3.utils.toWei("50", "gwei"),
+      gasPrice: GAS_PRICE,
       data: contract?.methods.step3_saveMessage(message).encodeABI(),
     }
 
