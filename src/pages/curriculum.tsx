@@ -13,12 +13,14 @@ const quests: Quest[] = [
     link: "/c/ethereum101",
     description: "Basics of Ethereum",
     released: true,
+    image: "https://ethers.university/ethereum-logo.png",
   },
   {
     title: "Compound 101: Introduction to Yield Farming",
     link: "/c/compound101",
     description: "Earn Yield from Your Tokens",
     released: true,
+    image: "http://ethers.university/compound-logo-dark.png",
   },
   {
     title: "Tokens 101: Introduction to Tokens",

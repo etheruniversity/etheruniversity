@@ -27,13 +27,14 @@ interface QuestCardProps {
 }
 
 const QuestCard: React.FC<QuestCardProps> = ({ quest }) => {
-  const { link, title, description, released } = quest
+  const { link, title, description, released, image } = quest
   return (
     <StyledQuestCard
       to={link}
       title={title}
       description={description}
       released={released}
+      image={image}
     />
   )
 }
