@@ -2,9 +2,24 @@
 pragma solidity >=0.7.0 <0.8.0;
 pragma abicoder v2;
 
+interface AchievementContractInterface {
+    function awardAchievement(address _student, uint256 _quest)
+        external
+        returns (uint256);
+}
+
 contract Ethereum101 {
     mapping(address => uint256) balances;
     mapping(address => string) messages;
+    AchievementContractInterface achievementContract;
+    // From enum definition in Achievement.sol
+    uint256 ETHEREUM_101_TOKEN_TYPE = 0;
+
+    constructor(address _achievementContractAddress) {
+        achievementContract = AchievementContractInterface(
+            _achievementContractAddress
+        );
+    }
 
     /**
      * Step 1 of the tutorial is to deposit some ETH to the contract.
@@ -32,12 +47,12 @@ contract Ethereum101 {
     }
 
     /**
-     * Checks quiz answers. Returns `true` if the answers are all correct,
-     * `false` otherwise.
+     * Step 4 of the tutorial is a short quiz. Returns `true` if the answers
+     * are all correct, `false` otherwise. Also mints an NFT if the answers
+     * are all correct.
      */
-    function submitQuizAnswers(string[2] memory _answerChoices)
+    function step4_submitQuizAnswers(string[2] memory _answerChoices)
         external
-        pure
         returns (bool)
     {
         // Probably should hash this or something to make it less obvious
@@ -51,6 +66,11 @@ contract Ethereum101 {
                 return false;
             }
         }
+
+        achievementContract.awardAchievement(
+            msg.sender,
+            ETHEREUM_101_TOKEN_TYPE
+        );
         return true;
     }
 

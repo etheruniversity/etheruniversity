@@ -12,18 +12,18 @@ contract Achievement is ERC721, AccessControl {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     Counters.Counter private _tokenIds;
 
-    enum Quest {
-        ETHEREUM_101,
-        TOKENS_101,
-        UNISWAP_101,
-        TOKENS_102,
-        COMPOUND_101,
-        COMPOUND_102,
-        ETHEREUM_102,
-        TOKENS_103,
-        UNISWAP_102,
-        TOKENS_104
-    }
+    // Mapping of token ID to token type (see list below)
+    mapping(uint256 => uint256) tokenTypes;
+    uint256 ETHEREUM_101 = 0;
+    uint256 TOKENS_101 = 1;
+    uint256 UNISWAP_101 = 2;
+    uint256 TOKENS_102 = 3;
+    uint256 COMPOUND_101 = 4;
+    uint256 COMPOUND_102 = 5;
+    uint256 ETHEREUM_102 = 6;
+    uint256 TOKENS_103 = 7;
+    uint256 UNISWAP_102 = 8;
+    uint256 TOKENS_104 = 9;
 
     constructor() ERC721("EtherUniversityAchievement", "ETHERU") {
         _setBaseURI(BASE_URI);
@@ -31,42 +31,22 @@ contract Achievement is ERC721, AccessControl {
         _setupRole(MINTER_ROLE, ETHEREUM_101_CONTRACT_ADDRESS);
     }
 
-    function awardAchievement(address _student, Quest _quest)
+    function typeOf(uint256 _tokenId) external view returns (uint256) {
+        return tokenTypes[_tokenId];
+    }
+
+    function awardAchievement(address _student, uint256 _quest)
         external
         returns (uint256)
     {
-        require(hasRole(MINTER_ROLE, msg.sender), "Caller is not a minter");
+        // For now, let anyone award an achievement so we don't have to set up
+        // too much admin/role/permission stuff right now.
+        // require(hasRole(MINTER_ROLE, msg.sender), "Caller is not a minter");
 
         Counters.increment(_tokenIds);
-
         uint256 newTokenId = Counters.current(_tokenIds);
-        _mint(_student, newTokenId);
-        _setTokenURI(newTokenId, uint2str(newTokenId));
-
+        _safeMint(_student, newTokenId);
+        tokenTypes[newTokenId] = _quest;
         return newTokenId;
-    }
-
-    // From https://github.com/provable-things/ethereum-api/blob/master/oraclizeAPI_0.5.sol#L1045
-    function uint2str(uint256 _i)
-        internal
-        pure
-        returns (string memory _uintAsString)
-    {
-        if (_i == 0) {
-            return "0";
-        }
-        uint256 j = _i;
-        uint256 len;
-        while (j != 0) {
-            len++;
-            j /= 10;
-        }
-        bytes memory bstr = new bytes(len);
-        uint256 k = len - 1;
-        while (_i != 0) {
-            bstr[k--] = bytes1(uint8(48 + (_i % 10)));
-            _i /= 10;
-        }
-        return string(bstr);
     }
 }
