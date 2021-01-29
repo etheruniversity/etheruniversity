@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Based on https://github.com/trufflesuite/truffle-init-default/blob/master/contracts/Migrations.sol
 
-pragma solidity >=0.8.0 <0.9.0;
+pragma solidity >=0.7.0 <0.8.0;
 
 contract Migrations {
     address public owner;
