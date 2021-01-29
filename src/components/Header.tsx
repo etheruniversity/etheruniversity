@@ -1,5 +1,4 @@
 import {
-  ButtonPrimary,
   H2,
   NavLink,
 } from "ethereum-org-website/src/components/SharedStyledComponents"
@@ -49,6 +48,7 @@ const Header: React.FC<HeaderProps> = ({ siteTitle = "" }) => (
         <NavLink to="/home">Home</NavLink>
         <NavLink to="/home#how-it-works">How It Works</NavLink>
         <NavLink to="/curriculum">Curriculum</NavLink>
+        <NavLink to="/achievements">Achievements</NavLink>
       </span>
       <div style={{ flex: 1 }} />
       <AccountButton />
