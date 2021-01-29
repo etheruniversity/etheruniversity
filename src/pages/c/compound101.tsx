@@ -101,7 +101,7 @@ const Compound101 = () => {
   }
   return (
     <Layout>
-      <SEO title="Compound 101" />
+      <SEO title="Compound 101" description="Earn yield on your dollars with Compound in 5 minutes. Practice on a testnet!" />
       <div style={headerStyle} >
         <h1>Compound 101</h1>
         <p>Last updated January 20, 2021</p>
