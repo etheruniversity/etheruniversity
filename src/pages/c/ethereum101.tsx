@@ -186,13 +186,40 @@ const Ethereum101Page: React.FC<PageProps> = () => {
       })
   }
 
-  async function submitQuizAnswers() {
+  async function step4_submitQuizAnswers() {
     if (!contract || !account || !web3) {
       return
     }
 
-    const allCorrect = await contract.methods
-      .submitQuizAnswers(quizAnswers)
+    setLoading(true)
+
+    const transaction = {
+      from: account.address,
+      to: ETHEREUM101_CONTRACT_ADDRESS,
+      value: 0,
+      gas: 1500000,
+      gasPrice: GAS_PRICE,
+      data: contract?.methods.step4_submitQuizAnswers(quizAnswers).encodeABI(),
+    }
+
+    const signedTransaction = await signTransaction(transaction)
+
+    await web3.eth
+      .sendSignedTransaction(signedTransaction?.rawTransaction ?? "")
+      .on("error", error => {
+        console.error(error)
+        alert("Error: see console")
+        setLoading(false)
+      })
+      .on("confirmation", confirmationNumber => {
+        if (confirmationNumber === 1) {
+          refetchBalance()
+          setLoading(false)
+        }
+      })
+
+    const allCorrect = await contract?.methods
+      .step4_submitQuizAnswers(quizAnswers)
       .call()
     alert(allCorrect ? "Correct!" : "Try again, at least one answer was wrong.")
   }
@@ -340,10 +367,10 @@ const Ethereum101Page: React.FC<PageProps> = () => {
         </ButtonSecondary>
       </p>
       <ButtonPrimary
-        disabled={quizAnswers.some(it => it === "")}
-        onClick={submitQuizAnswers}
+        disabled={quizAnswers.some(it => it === "") || loading}
+        onClick={step4_submitQuizAnswers}
       >
-        Submit
+        {loading ? "Waiting..." : "Submit"}
       </ButtonPrimary>
     </Layout>
   )

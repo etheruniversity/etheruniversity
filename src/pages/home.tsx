@@ -1,6 +1,5 @@
 import ButtonLink from "ethereum-org-website/src/components/ButtonLink"
 import {
-  ButtonPrimary,
   CardContainer,
   Divider,
   H1,
