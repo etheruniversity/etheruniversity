@@ -19,7 +19,7 @@ Deployed live to [etheducation.vercel.app](https://etheducation.vercel.app/). Ba
 1. Open Ganache from `/Applications/Ganache.app`
 1. Start Ganache quickstart personal blockchain
 1. Run `yarn truffle migrate --network development` to deploy smart contracts on personal blockchain
-   > When updating in development, run `yarn truffle migrate --network development --reset` to replace existing contracts. Make sure to replace the old contract address with the new one in `config.ts`.
+   > When updating in development, run `yarn truffle migrate --network development --reset` to replace existing contracts. Make sure to replace the old contract address with the new one in `.env.development`.
 
 To deploy to a real testnet, run something like `yarn truffle migrate --network goerli`.
 
@@ -64,7 +64,8 @@ Here's an example `.env.development` file.
 ```
 GATSBY_TESTNET_NAME="goerli"
 GATSBY_INFURA_PROJECT_ID="somenumbersandletters"
-GATSBY_ETHEREUM101_CONTRACT_ADDRESS="0xCONTRACTADDRESS"
+GATSBY_ACHIEVEMENT_CONTRACT_ADDRESS="0xCONTRACTADDRESS"
+GATSBY_ETHEREUM101_CONTRACT_ADDRESS="0xOTHERCONTRACTADDRESS"
 
 INFURA_PROJECT_ID="somenumbersandletters"
 PRIVATE_KEY="longstringofnumbersandletters"
