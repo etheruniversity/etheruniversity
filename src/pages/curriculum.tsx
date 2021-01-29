@@ -15,6 +15,12 @@ const quests: Quest[] = [
     released: true,
   },
   {
+    title: "Compound 101: Introduction to Yield Farming",
+    link: "/c/compound101",
+    description: "Earn Yield from Your Tokens",
+    released: true,
+  },
+  {
     title: "Tokens 101: Introduction to Tokens",
     link: "/c/tokens101",
     description: "ERC-20 vs ERC-721 Tokens (NFTs)",
@@ -32,12 +38,6 @@ const quests: Quest[] = [
     description:
       "USDC, DAI, and USDT. Sending Money Internationally, Instantly.",
     released: false,
-  },
-  {
-    title: "Compound 101: Introduction to Yield Farming",
-    link: "/c/compound101",
-    description: "Earn Yield from Your Tokens",
-    released: true,
   },
   {
     title: "Compound 102: Introduction to Borrowing",
