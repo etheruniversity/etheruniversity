@@ -14,6 +14,23 @@ const VIEW_CONTRACT_ABI = require('../../ABIs/Compound101_ABI.json');
 
 const BLOCKS_PER_YEAR = 4 * 60 * 24 * 365; // based on 4 blocks occurring every minute
 
+class Poller {
+  constructor(pollOnce) {
+    this.pollOnce = pollOnce
+    this.pollIndefinitely = () => {
+      this.pollOnce();
+      this.timer = setTimeout(this.pollIndefinitely, 10000)
+    }
+  }
+  startPolling() {
+    this.pollOnce();
+    this.timer = setTimeout(this.pollIndefinitely, 10000)
+  }
+  stopPolling() {
+    clearTimeout(this.timer);
+  }
+}
+
 const Compound101 = () => {
   // I realize there's a bug here if a user deposits more than once. Let's not worry about that yet :)
   const [currentWalletUSDCBalance, setCurrentWalletUSDCBalance] = useState(0.0);
@@ -32,7 +49,7 @@ const Compound101 = () => {
   const { web3, loading: web3loading, transactionPendingObserver } = useWeb3();
   const txPending = (is) => {
     setIsTransactionPending(is);
-    transactionPendingObserver.publish(is); //TODO: Unsubscribe when useEffect is done.
+    transactionPendingObserver.publish(is);
   }
 
   const { account, loading: accountLoading } = useAccount();
@@ -46,7 +63,7 @@ const Compound101 = () => {
 
     USDCContract.methods.balanceOf(account.address).call().then(parseFloat).then(a => a / USDC_DECIMALS).then(a => a < 10.0).then(setShouldShowUSDCFaucet);
 
-    const pollIndefinitely = () => {
+    const poller = new Poller(() => {
       VIEWCONTRACT.methods.getViewModel(account.address).call().then(result => {
         const growthPerBlock = 1.0 + parseFloat(result.supplyRatePerBlock) / ETH_MANTISSA;
         const usdcApy = 100 * (Math.pow(growthPerBlock, BLOCKS_PER_YEAR) - 1);
@@ -69,9 +86,9 @@ const Compound101 = () => {
         setCurrentAllowance(allowance);
         setIsApproveComplete(allowance > 1e8 && allowance > usdcBalance);
       });
-      setTimeout(pollIndefinitely, 10000) // TODO: stop polling when useeffect ends
-    }
-    pollIndefinitely(); // Start polling
+    });
+    poller.startPolling();
+    return poller.stopPolling;
   }, [web3loading, web3, accountLoading, account]);
 
   let usdcFaucet = <></>
