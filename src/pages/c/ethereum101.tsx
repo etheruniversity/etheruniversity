@@ -181,6 +181,7 @@ const Ethereum101Page: React.FC<PageProps> = () => {
           setSaveMessageTransactionHash(transactionHash)
           refetchBalance()
           getContractMessage()
+          setMessage("")
           setLoading(false)
         }
       })
@@ -250,7 +251,13 @@ const Ethereum101Page: React.FC<PageProps> = () => {
       <p>
         To start, make sure you have some {capitalize(TESTNET_NAME)} ETH. Click
         the button below to get some ETH sent to the address we've created for
-        you, <b>{account?.address}</b>.
+        you,{" "}
+        <b>
+          <Link to={`${ETHERSCAN_ENDPOINT}/address/${account?.address}`}>
+            {account?.address}
+          </Link>
+        </b>
+        .
       </p>
       <p>
         <ButtonLink to={FAUCET_LINK}>
