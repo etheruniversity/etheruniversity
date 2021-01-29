@@ -1,8 +1,11 @@
 import Link from "ethereum-org-website/src/components/Link"
 import React, { useState, useEffect} from "react"
 import { Layout, SEO, InteractionCard, EthEducationButton} from "../../components/"
-import { ADDRESS, TESTNET_NAME } from "../../config"
+import { ADDRESS, TESTNET_NAME, FAUCET_LINK } from "../../config"
+import Modal from "ethereum-org-website/src/components/Modal"
+import { H2 } from "ethereum-org-website/src/components/SharedStyledComponents"
 import { useWeb3, useAccount} from "../../hooks"
+import { capitalize } from "lodash"
 
 const ETH_MANTISSA = 1e18;
 
@@ -45,6 +48,7 @@ const Compound101 = () => {
   const [shouldShowUSDCFaucet, setShouldShowUSDCFaucet] = useState(false);
   const [isApproveComplete, setIsApproveComplete] = useState(false);
   const [isDepositComplete, setIsDepositComplete] = useState(false);
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
 
   const { web3, loading: web3loading, transactionPendingObserver } = useWeb3();
   const txPending = (is) => {
@@ -96,7 +100,7 @@ const Compound101 = () => {
     if (TESTNET_NAME === "mainnet") {
       usdcFaucet = <p>You need to aquire some USDC. You can ask a friend or use Uniswap. You can also switch to testnet where we can give you free USDC.</p>
     } else {
-      usdcFaucet = <><p>You need to request some USDC from our testnet faucet.</p><div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{printUsdc(account, web3, txPending)}} disabled={isTransactionPending}>Request Testnet USDC</EthEducationButton></div></>
+      usdcFaucet = <><p>You need to request some USDC from our testnet faucet.</p><div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{if (currentWalletETHBalance === 0.0) {setIsAccountModalOpen(true)} else {printUsdc(account, web3, txPending)}}} disabled={isTransactionPending}>Request Testnet USDC</EthEducationButton></div></>
     }
   }
   return (
@@ -110,9 +114,9 @@ const Compound101 = () => {
       <p>Let’s get started.</p>
       {usdcFaucet}
       <p>You need to allow Compound access to your USDC.</p>
-      <div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{approveButtonHandler(account, web3, txPending)}} disabled={isTransactionPending || isApproveComplete}>{isApproveComplete ? "Approved" : "Approve"}</EthEducationButton></div>
+      <div style={{textAlign: "center", marginBottom: 20}}><EthEducationButton onClick={()=>{if (currentWalletETHBalance === 0.0) {setIsAccountModalOpen(true)} else {approveButtonHandler(account, web3, txPending)}}} disabled={isTransactionPending || isApproveComplete}>{isApproveComplete ? "Approved" : "Approve"}</EthEducationButton></div>
       <p>Great, now we can deposit some of our USDC to earn yield. Please note, this action will lock your USDC. This means you can't send it to others until you withdraw it from Compound.</p>
-      <InteractionCard title="Compound Deposit" sideTextTitle="Your Wallet" sideTextBody={<span>USDC Balance: {currentWalletUSDCBalance.toFixed(2)}<br/>ETH Balance: {currentWalletETHBalance.toFixed(2)}</span>} circleText={<span>APY {currentUSDCApy.toFixed(2)}%</span>} button={<EthEducationButton onClick={()=>{depositButtonHandler(account, web3, Math.floor(currentWalletUSDCBalance), txPending)}} disabled={currentAllowance < currentWalletUSDCBalance - .1 || isTransactionPending || isDepositComplete}>{isDepositComplete ? "Deposited" : "Deposit All USDC"}</EthEducationButton>} />
+      <InteractionCard title="Compound Deposit" sideTextTitle="Your Wallet" sideTextBody={<span>USDC Balance: {currentWalletUSDCBalance.toFixed(2)}<br/>ETH Balance: {currentWalletETHBalance.toFixed(2)}</span>} circleText={<span>APY {currentUSDCApy.toFixed(2)}%</span>} button={<EthEducationButton onClick={()=>{if (currentWalletETHBalance === 0.0) {setIsAccountModalOpen(true)} else {depositButtonHandler(account, web3, Math.floor(currentWalletUSDCBalance), txPending)}}} disabled={currentAllowance < currentWalletUSDCBalance - .1 || isTransactionPending || isDepositComplete}>{isDepositComplete ? "Deposited" : "Deposit All USDC"}</EthEducationButton>} />
       <p>Awesome, now you’re earning yield. The yield you earn is measured as a percent of the amount you have deposited. For example, if yield is 10% annual percentage rate (APY) and you deposited $1000 then at the end of the year you’ll have earned $100 in interest.</p>
       <p>This yield accrues every 13 seconds with a new Ethereum block. This means you can watch your earnings grow in real time and withdraw them whenever you’d like.</p>
       <p>In the {earnings.block - depositBlock} blocks since you deposited, your balance has grown {earnings.usdcEarned} USDC, from {depositAmount * usdcPerCusdcRate} USDC to {depositAmount+earnings.usdcEarned} USDC. Most of your interest was paid in USDC, but you’ve also earned some {earnings.compEarned} COMP, the governance token. You can learn more about COMP token in <Link to="/c">this quest (coming soon)</Link> or exchange it for USDC by following the <Link to="/c">Uniswap quest (coming soon)</Link>.</p>
@@ -120,6 +124,26 @@ const Compound101 = () => {
       <p>To understand where this yield is coming from it helps to go back to that analogy of the bank. When you deposit money in your bank, they lend it out to others who pay the bank interest. This may be in the form of a mortgage or a credit card loan. The banks split their profit with you. In this scenario, they have a lot of control.</p>
       <p>The analogy works well with the Compound Protocol as a replacement for the bank. Just like your bank, Compound is lending out the money. Your money, along with the money others deposit, goes into a large pool. Borrowers can borrow money from this pool provided they have proof they'll pay back their debt. Instead of the bank setting interest rates for borrowers and depositors, the interest rate is set by supply and demand.</p>
       <Link href="https://medium.com/compound-finance/faq-1a2636713b69">Dive deep into how Compound works</Link>
+      <Modal isOpen={isAccountModalOpen} setIsOpen={setIsAccountModalOpen}>
+        <H2 style={{ marginTop: 0 }}>Get Some ETH</H2>
+        <p>
+          We've created an account for you on the{" "}
+          <b>{capitalize(TESTNET_NAME)}</b> network.
+        </p>
+        {TESTNET_NAME !== "mainnet" && (
+          <p>
+            The {capitalize(TESTNET_NAME)} network is an Ethereum{" "}
+            <b>testnet</b>, meaning your ETH has no real value. The network is
+            just used for testing.
+          </p>
+        )}
+        <p>
+          Your address is <b>{account?.address}</b>.
+        </p>
+        <p>
+          Since your balance is low, you first need to get some ETH {TESTNET_NAME !== "mainnet" ? <>at the Faucet <Link to={FAUCET_LINK}>here</Link>.</> : ". You (or a friend) can send ETH to the address above."}
+        </p>
+      </Modal>
     </Layout>
   )
 }
