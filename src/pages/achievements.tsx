@@ -64,12 +64,19 @@ const AchievementPage = () => {
     <Layout>
       <SEO title="Achievements" />
       <H1>Achievements</H1>
+      <p>
+        Achievements are minted through a Ether University{" "}
+        <Link
+          to={`${ETHERSCAN_ENDPOINT}/token/${ACHIEVEMENT_CONTRACT_ADDRESS}`}
+        >
+          smart contract
+        </Link>{" "}
+        conforming to the <Link to="http://erc721.org/">ERC-721</Link> standard
+        for non-fungible tokens.
+      </p>
       {achievements.length > 0 ? (
         <>
-          <p>
-            Here are the <Link to="http://erc721.org/">ERC-721 NFTs</Link>{" "}
-            you've earned for completing quests!
-          </p>
+          <p>Here are the NFTs you've earned for completing quests!</p>
           <CardContainer>
             {achievements.map(({ tokenId, tokenType }) => (
               <StyledCard
