@@ -48,9 +48,10 @@ Configuration occurs through environment variables. Create a `.env.development` 
 
 The variable names are prefixed with `GATSBY_` so they are accessible in browser JavaScript. See the [Gatsby docs on environment variables](https://www.gatsbyjs.com/docs/how-to/local-development/environment-variables/) for more details.
 
-- `GATSBY_INFURA_PROJECT_ID`: the Infura project id
+- `GATSBY_INFURA_PROJECT_ID`: the Infura project id.
 - `GATSBY_TESTNET_NAME`: the name of the testnet we are deploying to. For mainnet, set this value to `mainnet`.
-- `GATSBY_ETHEREUM101_CONTRACT_ADDRESS`: the address of the Ethereum 101 contract
+- `GATSBY_ACHIEVEMENT_CONTRACT_ADDRESS`: the address of the Ether University Achievement NFT contract.
+- `GATSBY_ETHEREUM101_CONTRACT_ADDRESS`: the address of the Ethereum 101 tutorial contract.
 
 Alternatively, set the `GATSBY_PRIVATE_NODE` variable instead of `GATSBY_INFURA_PROJECT_ID` to access a private node directly rather than through Infura. Something like `GATSBY_PRIVATE_NODE=http://myprivatenode.com:8645`.
 
