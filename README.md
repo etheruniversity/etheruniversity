@@ -1,6 +1,8 @@
-# Ether University
+# Ether University: Interactive Ethereum and DeFi Quests
 
-Deployed live to [ether.university](https://ether.university/). Based on https://github.com/gatsbyjs/gatsby-starter-default
+A project by [Nathan Leung](https://www.natecation.com) and [Evan Mays](http://www.evanmays.com) for the ETH Winter learning group.
+
+Deployed live to [ether.university](https://ether.university/). Based on https://github.com/gatsbyjs/gatsby-starter-default.
 
 ## Quick Start
 
