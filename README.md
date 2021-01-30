@@ -4,8 +4,8 @@ Deployed live to [ether.university](https://ether.university/). Based on https:/
 
 ## Quick Start
 
-1. Clone repository: `git clone https://github.com/etheducation/etheducation`.
-1. Change into the repository directory: `cd etheducation`.
+1. Clone repository: `git clone https://github.com/etheruniversity/etheruniversity`.
+1. Change into the repository directory: `cd etheruniversity`.
 1. Install dependencies: `yarn install`.
 
 ### Frontend
