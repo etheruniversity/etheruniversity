@@ -1,6 +1,6 @@
-# ETH Education
+# Ether University
 
-Deployed live to [etheducation.vercel.app](https://etheducation.vercel.app/). Based on https://github.com/gatsbyjs/gatsby-starter-default
+Deployed live to [ether.university](https://ether.university/). Based on https://github.com/gatsbyjs/gatsby-starter-default
 
 ## Quick Start
 
